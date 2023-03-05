@@ -30,7 +30,7 @@ Queste regole sono prese da [questo documento](https://gist.github.com/ryansechr
 
 1. I [**tag di apertura**](#1-tag-di-apertura) devono essere sulla loro riga e devono essere seguiti da una riga vuota
 2. I [**tag di chiusura**](#2-tag-di-chiusura), se il file contiene SOLO codice PHP, non dovrebbero esserci ([la documentazione di PHP](https://www.php.net/basic-syntax.phptags) spiega perché)
-3. I [**tag di apertura e chiusura**](#3-tag-di-apertura-e-chiusura) nei file con HTML dovrebbero essere su una sola riga dove necessario 
+3. I [**tag di apertura e chiusura**](#3-tag-di-apertura-e-chiusura) nei file con HTML dovrebbero essere su una sola riga dove necessario
 
 &#9650; [Tabella dei contenuti](#tabella-dei-contenuti)
 
@@ -146,14 +146,14 @@ I **blocchi di codice** devono essere commentati.
 <?php
 
 // Effettua una ricerca nella tabella degli utenti nel database e restituisce il risultato dopo la richiesta
-if( isset( $_POST['ricercaBtn'] ) ) {
-    $username = $mysqli->real_escape_string( $_POST['ricerca'] );
+if (isset($_POST['ricercaBtn'])) {
+    $username = $mysqli->real_escape_string($_POST['ricerca']);
     // Creazione query
     $query = "SELECT ID_utente, username, nome, cognome WHERE (username = ?)";
     // Preparazione query per esecuzione
-    $statement = $mysqli->prepare( $query );
+    $statement = $mysqli->prepare($query);
     // Associazione parametri
-    $statement->bind_param( "s", $username );
+    $statement->bind_param("s", $username);
 
     // ...
 }
@@ -263,7 +263,8 @@ Una riga non deve superare gli **80 caratteri**.
 // Questa riga è troppo lunga e va spezzata
 $manga = array('Blue Box', 'Chainsaw Man', 'Ayakashi Triangle', 'Oniichan wa Oshimai!', 'The Great Jahy Will Not Be Defeated!', 'Kuroiwa Medaka ni Watashi no Kawaii ga Tsūjinai')
 
-```  
+```
+
 ```php
 <?php
 
@@ -336,7 +337,7 @@ $autori_manga = array(
     'Ayakashi Triangle' => 'Kentaro Yabuki',
     'Oniichan wa Oshimai!' => 'Nekotōfu',
     'The Great Jahy Will Not Be Defeated!' => 'Wakame Konbu',
-    'Kuroiwa Medaka ni Watashi no Kawaii ga Tsūjinai' => 'Ran Kuze' 
+    'Kuroiwa Medaka ni Watashi no Kawaii ga Tsūjinai' => 'Ran Kuze'
 );
 
 // Questa riga è allineata con gli spazi
@@ -346,7 +347,7 @@ $autori_manga = array(
     'Ayakashi Triangle'                               => 'Kentaro Yabuki',
     'Oniichan wa Oshimai!'                            => 'Nekotōfu',
     'The Great Jahy Will Not Be Defeated!'            => 'Wakame Konbu',
-    'Kuroiwa Medaka ni Watashi no Kawaii ga Tsūjinai' => 'Ran Kuze' 
+    'Kuroiwa Medaka ni Watashi no Kawaii ga Tsūjinai' => 'Ran Kuze'
 );
 
 ```
@@ -471,7 +472,6 @@ Nell'**HTML** bisogna usare doppie virgolette per gli attributi e per i valori. 
 #### Esempio
 
 ```html
-
 <!-- Questo attributo è racchiuso da doppie virgolette -->
 <input type="text" name="nome">
 
@@ -591,7 +591,7 @@ function nome_funzione(
     $argomento4 = 'default'
 ) {
     // ...
-    return 'stringa'; 
+    return 'stringa';
 }
 
 ```
@@ -625,10 +625,10 @@ function nome_funzione(
     $argomento4 = 'default'
 ) {
     // ...
-    
+
     $stringa = 'stringa';
-    
-    return $stringa; 
+
+    return $stringa;
 }
 
 ```
@@ -695,7 +695,7 @@ switch ($variabile) {
     case 'valore2':
         // ...
         break;
-    
+
     default:
         // ...
         break;
