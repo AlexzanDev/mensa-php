@@ -26,4 +26,4 @@
 ## Link e varie
 
 * Potete trovare tutti i layout su [Figma](https://www.figma.com/file/CzQiDk0zTozc54zfl9NDH6/Mensa-PHP?node-id=0%3A1&t=CWlsh45v4v1eN5FZ-1)
-* Per il CSS utilizzeremo [Tailwind](https://tailwindcss.com/)
+* Per il CSS utilizzeremo [Bootstrap](https://getbootstrap.com)

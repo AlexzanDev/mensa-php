@@ -8,6 +8,11 @@
 * Gestione logout
 * Gestione profilo utente con possibilità di modificare nome, cognome, email e password
 * Ruoli utente: amministratore, magazziniere, cuoco, food manager (con permessi)
+  * Amministratore (1)
+  * Magazziniere (2)
+  * Cuoco (3)
+  * Food Manager (4)
+  * Utente normale (5)
 
 ## Magazzino
 
