@@ -1,0 +1,60 @@
+CREATE DATABASE sito_mensa;
+USE sito_mensa;
+
+CREATE TABLE utente (
+    id_utente INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(30) NOT NULL,
+    cognome VARCHAR(30) NOT NULL,
+    email VARCHAR(30) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    indirizzo VARCHAR(255) NOT NULL,
+    telefono VARCHAR(30) NOT NULL,
+    codice_fiscale VARCHAR(16) NOT NULL,
+    data_nascita DATE NOT NULL,
+    livello INT(2) NOT NULL
+);
+
+CREATE TABLE ingrediente (
+    id_ingrediente INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(30) NOT NULL,
+    descrizione TEXT NOT NULL,
+    unita_misura VARCHAR(30) NOT NULL,
+    ultima_modifica DATETIME NOT NULL,
+    id_utente INT NOT NULL,
+    FOREIGN KEY (id_utente) REFERENCES utente(id_utente) 
+);
+
+CREATE TABLE ricetta (
+    id_ricetta INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(30) NOT NULL,
+    descrizione TEXT NOT NULL,
+    ultima_modifica DATETIME NOT NULL,
+    tempo_preparazione VARCHAR(50) NOT NULL,
+    tempo_cottura VARCHAR(50) NOT NULL,
+    sommario VARCHAR(255) NOT NULL,
+    id_utente INT NOT NULL,
+    FOREIGN KEY (id_utente) REFERENCES utente(id_utente)
+);
+
+CREATE TABLE correlazioneIR (
+    quantita INT(5) NOT NULL,
+    id_ricetta INT NOT NULL,
+    id_ingrediente INT NOT NULL,
+    FOREIGN KEY (id_ricetta) REFERENCES ricetta(id_ricetta),
+    FOREIGN KEY (id_ingrediente) REFERENCES ingrediente(id_ingrediente)
+);
+
+CREATE TABLE magazzino (
+    id_lotto INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    descrizione TEXT NOT NULL,
+    data_scadenza DATE NOT NULL,
+    quantita INT(5) NOT NULL,
+    prezzo FLOAT(5,2) NOT NULL,
+    ultima_modifica DATETIME NOT NULL,
+    stato BOOLEAN NOT NULL,
+    id_utente INT NOT NULL,
+    FOREIGN KEY (id_utente) REFERENCES utente(id_utente)
+);
+
+INSERT INTO utente (nome, cognome, email, password, indirizzo, telefono, codice_fiscale, data_nascita, livello)
+VALUES ("Paolo", "Rubino", "paolorubino@gmail.com", "colore3", "Via Pannunzio 27, 10041, Carignano (TO)", "+39 333 1234567", "RBNPLA79L11L219N", "1979-07-11", 1);
