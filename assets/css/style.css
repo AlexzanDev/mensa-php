@@ -1,0 +1,128 @@
+@font-face {
+    font-family: 'Roboto';
+    src: url('../fonts/Roboto-Black.woff2') format('woff2'),
+        url('../fonts/Roboto-Black.woff') format('woff');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('../fonts/Roboto-Bold.woff2') format('woff2'),
+        url('../fonts/Roboto-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('../fonts/Roboto-Italic.woff2') format('woff2'),
+        url('../fonts/Roboto-Italic.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('../fonts/Roboto-Regular.woff2') format('woff2'),
+        url('../fonts/Roboto-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('../fonts/Roboto-Medium.woff2') format('woff2'),
+        url('../fonts/Roboto-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('../fonts/Roboto-Light.woff2') format('woff2'),
+        url('../fonts/Roboto-Light.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('../fonts/Roboto-Thin.woff2') format('woff2'),
+        url('../fonts/Roboto-Thin.woff') format('woff');
+    font-weight: 100;
+    font-style: normal;
+    font-display: swap;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+@media (min-width: 1200px) {
+    .login-container {
+        max-width: 650px;
+        width: 650px;
+        margin: auto;
+    }
+    .login-wrapper {
+        width: 100%;
+    }
+}
+
+.login-wrapper {
+    width: 80%;
+}
+
+.login-button {
+    padding: 10px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.login-forgot {
+    text-decoration: none;
+}
+
+.login-password-container {
+    position: relative;
+}
+
+.login-password-eye {
+    position: absolute;
+    cursor: pointer;
+    color: lightgray;
+    top: 28%;
+    right: 3%;
+}
+
+.login-form-input {
+    padding: 0.6rem;
+}
+
+.page-navigation a, .link {
+    text-decoration: none;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    font-weight: 600;
+    color: black;
+}
+
+.page-navigation a:visited, .link:visited {
+    color: inherit;
+}
+
+.page-navigation a:hover, .link:hover {
+    text-decoration: underline;
+    opacity: 0.9;
+}
+
+.login-wrapper .page-navigation {
+    text-align: center;
+}

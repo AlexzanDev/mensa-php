@@ -1,5 +1,8 @@
 <?php
 
+// Avvia la sessione
+session_start();
+
 // Ottieni il nome della cartella "root" del progetto -- https://www.php.net/manual/en/function.basename.php#121405
 function mb_basename($path) {
     if (preg_match('@^.*[\\\\/]([^\\\\/]+)$@s', $path, $matches)) {
@@ -54,8 +57,9 @@ function caricaAssets() {
     $style = ABSPATH . '/assets/css/style.css';
     $jquery = ABSPATH . '/assets/js/jquery.js';
     $sitoScript = ABSPATH . '/assets/js/sito.js';
+    $fontAwesome = ABSPATH . '/assets/vendor/fontawesome/css/fontawesome-all.css';
 
-    return array($bootstrapCSS, $style, $jquery, $sitoScript);
+    return array($bootstrapCSS, $style, $jquery, $sitoScript, $fontAwesome);
 }
 caricaAssets();
 
@@ -70,6 +74,7 @@ function mensaHead($titolo) {
         <title>' . $titolo . '</title>
         <link rel="stylesheet" href="' . caricaAssets()[0] . '">
         <link rel="stylesheet" href="' . caricaAssets()[1] . '">
+        <link rel="stylesheet" href="' . caricaAssets()[4] . '">
     </head>
     <body>';
 }
