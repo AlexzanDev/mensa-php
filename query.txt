@@ -57,5 +57,5 @@ CREATE TABLE magazzino (
     FOREIGN KEY (id_utente) REFERENCES utente(id_utente)
 );
 
-INSERT INTO utente (nome, cognome, email, password, indirizzo, telefono, codice_fiscale, data_nascita, livello)
-VALUES ("Paolo", "Rubino", "paolorubino@gmail.com", "colore3", "Via Pannunzio 27, 10041, Carignano (TO)", "+39 333 1234567", "RBNPLA79L11L219N", "1979-07-11", 1);
+INSERT INTO utente (nome, cognome, email, username, password, indirizzo, telefono, codice_fiscale, data_nascita, livello)
+VALUES ("Paolo", "Rubino", "paolorubino@gmail.com", "paolorubino", "colore3", "Via Pannunzio 27, 10041, Carignano (TO)", "+39 333 1234567", "RBNPLA79L11L219N", "1979-07-11", 1);

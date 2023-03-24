@@ -19,23 +19,23 @@ $nomeCartella = mb_basename(getcwd());
 // Definisci i path assoluti per richiamare i file
 if(!defined('ABSPATH')) {
     // Controlla se il file viene chiamato dalla cartella magazzino o mensa, in quel caso modifica l'ABSPATH
-    if($nomeCartella == 'magazzino' || $nomeCartella == 'mensa') {
+    if($nomeCartella == 'magazzino' || $nomeCartella == 'mensa' || $nomeCartella == 'admin') {
         define('ABSPATH', '..');
         define('MAGAZZINO', '../magazzino');
         define('MENSA', '../mensa');
-    }
-    else {
+        define('ADMIN', '../admin');
+    } else {
         define('ABSPATH', '.');
         define('MAGAZZINO', './magazzino');
         define('MENSA', './mensa');
+        define('ADMIN', './admin');
     }
 }
 
 // Controlla se il file di configurazione esiste
 if(!file_exists(ABSPATH . '/config.php')) {
     die('File di configurazione non trovato.');
-}
-else {
+} else {
     // Includo il file per la connessione al database
     require_once ABSPATH . '/config.php';
 }
@@ -46,10 +46,12 @@ function controllaConnessioneDB() {
     // Se la connessione non è stata stabilita, mostra errore
     if (!$connessione) {
         die("Connessione fallita: " . mysqli_connect_error());
+    } else {
+        return $connessione;
     }
     mysqli_close($connessione);
 }
-controllaConnessioneDB();
+$mysqli = controllaConnessioneDB();
 
 // Carica tutti gli assets
 function caricaAssets() {
@@ -77,4 +79,23 @@ function mensaHead($titolo) {
         <link rel="stylesheet" href="' . caricaAssets()[4] . '">
     </head>
     <body>';
+}
+
+// Reindirizza utente in base al ruolo
+function controllaRuoloUtente($ruolo) {
+    switch($ruolo):
+        case 1:
+            header('Location: ' . ADMIN . '/index.php');
+            break;
+        case 2:
+            header('Location: ' . MAGAZZINO . '/index.php');
+            break;
+        case 3:
+        case 4:
+            header('Location: ' . MENSA . '/index.php');
+            break;
+        case 0:
+            header('Location: ' . ABSPATH . '/login.php');
+            break;
+    endswitch;
 }
