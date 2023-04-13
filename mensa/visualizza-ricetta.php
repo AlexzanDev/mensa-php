@@ -5,11 +5,5 @@ require_once '../load.php';
 // Carica l'head e l'header
 mensaHead('Mensa');
 require_once ABSPATH . '/layout/components/header.php';
-?>
-
-
-<?php
 // Carica il footer
 require_once ABSPATH . '/layout/components/footer.php';
-?>
-

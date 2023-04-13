@@ -1,7 +1,7 @@
 CREATE DATABASE sito_mensa;
 USE sito_mensa;
 
-CREATE TABLE utente (
+CREATE TABLE utenti (
     id_utente INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(30) NOT NULL,
     cognome VARCHAR(30) NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE utente (
     livello INT(2) NOT NULL
 );
 
-CREATE TABLE ingrediente (
+CREATE TABLE ingredienti (
     id_ingrediente INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(30) NOT NULL,
     descrizione TEXT NOT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE ingrediente (
     FOREIGN KEY (id_utente) REFERENCES utente(id_utente) 
 );
 
-CREATE TABLE ricetta (
+CREATE TABLE ricette (
     id_ricetta INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(30) NOT NULL,
     descrizione TEXT NOT NULL,
@@ -37,7 +37,7 @@ CREATE TABLE ricetta (
     FOREIGN KEY (id_utente) REFERENCES utente(id_utente)
 );
 
-CREATE TABLE correlazioneIR (
+CREATE TABLE correlazioniIR (
     quantita INT(5) NOT NULL,
     id_ricetta INT NOT NULL,
     id_ingrediente INT NOT NULL,
