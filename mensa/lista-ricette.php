@@ -1,11 +1,4 @@
 <?php
-
-$database = new mysqli("localhost", "root", "", "sito_mensa");
-//recupera il database
-if ($database->connect_errno) {
-  echo "non si connette: (" . $database->connect_errno . ")" . $database->connect_error;
-}
-
 // Importa il file di caricamento
 require_once '../load.php';
 // Carica l'head e l'header
