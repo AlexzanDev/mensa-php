@@ -45,7 +45,7 @@ require_once ABSPATH . '/layout/components/header.php';
           <tbody>
             <?php
             $query = "SELECT nome,tempo_preparazione,tempo_cottura,sommario FROM ricette";
-            $dichiarazione = $database->prepare($query);
+            $dichiarazione = $mysqli->prepare($query);
 
             if ($dichiarazione->execute()) {
               $risultato = $dichiarazione->get_result();

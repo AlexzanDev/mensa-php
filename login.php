@@ -23,7 +23,7 @@ if(isset($_POST['loginBtn'])) {
     $accessoEffettuato = false;
     $email = $mysqli->real_escape_string($_POST['email']);
     $password = $mysqli->real_escape_string($_POST['password']);
-    $query = "SELECT id_utente, nome, cognome, username, password, livello FROM utente WHERE (email = ?)"; // Creazione query
+    $query = "SELECT id_utente, nome, cognome, username, password, livello FROM utenti WHERE (email = ?)"; // Creazione query
     $statement = $mysqli->prepare($query); // Preparazione query per esecuzione
     $statement->bind_param("s", $email); // Associazione parametri
     $statement->execute(); // Esecuzione query

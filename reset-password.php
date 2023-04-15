@@ -39,7 +39,7 @@ if(isset($_POST['reimpostaBtn'])) {
     // Controlla se le password inserite sono uguali
     if(controlloPassword($password, $passwordVerifica)) {
         // Cerca l'utente
-        $search_query = "SELECT username FROM utente WHERE (username = ?)";
+        $search_query = "SELECT username FROM utenti WHERE (username = ?)";
         $search_statement = $mysqli->prepare($search_query);
         $search_statement->bind_param("s", $username);
         if($search_statement->execute()) {
@@ -51,7 +51,7 @@ if(isset($_POST['reimpostaBtn'])) {
             } else {            
                 $utenteTrovato = true;
                 $passwordHash = password_hash($password, PASSWORD_DEFAULT); // Hash della password
-                $query = "UPDATE utente SET password = ? WHERE (username = ?)"; // Creazione query
+                $query = "UPDATE utenti SET password = ? WHERE (username = ?)"; // Creazione query
                 $statement = $mysqli->prepare($query); // Preparazione query per esecuzione
                 $statement->bind_param("ss", $passwordHash, $username); // Associazione parametri
                 if($statement->execute()) {

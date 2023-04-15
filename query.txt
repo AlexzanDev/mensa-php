@@ -22,7 +22,7 @@ CREATE TABLE ingredienti (
     unita_misura VARCHAR(30) NOT NULL,
     ultima_modifica DATETIME NOT NULL,
     id_utente INT NOT NULL,
-    FOREIGN KEY (id_utente) REFERENCES utente(id_utente) 
+    FOREIGN KEY (id_utente) REFERENCES utenti(id_utente) 
 );
 
 CREATE TABLE ricette (
@@ -34,15 +34,15 @@ CREATE TABLE ricette (
     tempo_cottura VARCHAR(50) NOT NULL,
     sommario VARCHAR(255) NOT NULL,
     id_utente INT NOT NULL,
-    FOREIGN KEY (id_utente) REFERENCES utente(id_utente)
+    FOREIGN KEY (id_utente) REFERENCES utenti(id_utente)
 );
 
 CREATE TABLE correlazioniIR (
     quantita INT(5) NOT NULL,
     id_ricetta INT NOT NULL,
     id_ingrediente INT NOT NULL,
-    FOREIGN KEY (id_ricetta) REFERENCES ricetta(id_ricetta),
-    FOREIGN KEY (id_ingrediente) REFERENCES ingrediente(id_ingrediente)
+    FOREIGN KEY (id_ricetta) REFERENCES ricette(id_ricetta),
+    FOREIGN KEY (id_ingrediente) REFERENCES ingredienti(id_ingrediente)
 );
 
 CREATE TABLE magazzino (
@@ -54,8 +54,8 @@ CREATE TABLE magazzino (
     ultima_modifica DATETIME NOT NULL,
     stato BOOLEAN NOT NULL,
     id_utente INT NOT NULL,
-    FOREIGN KEY (id_utente) REFERENCES utente(id_utente)
+    FOREIGN KEY (id_utente) REFERENCES utenti(id_utente)
 );
 
-INSERT INTO utente (nome, cognome, email, username, password, indirizzo, telefono, codice_fiscale, data_nascita, livello)
+INSERT INTO utenti (nome, cognome, email, username, password, indirizzo, telefono, codice_fiscale, data_nascita, livello)
 VALUES ("Paolo", "Rubino", "paolorubino@gmail.com", "paolorubino", "colore3", "Via Pannunzio 27, 10041, Carignano (TO)", "+39 333 1234567", "RBNPLA79L11L219N", "1979-07-11", 1);
