@@ -25,7 +25,16 @@ if( !isset( $_GET['id'] ) || !is_numeric( $_GET['id'] ) ) {
             // Se esiste un ingrediente con questo ID, salva i dati
             $statement->bind_result($idIngrediente, $nome, $descrizione, $unitaMisura, $ultimaModifica, $idUtente); // Abbina i risultati della query alle variabili
             $statement->fetch(); // Estrae i risultati dalla query
-            $ultimaModifica = strtotime($ultimaModifica); // Formatta la data
+            $queryUtente = "SELECT nome, cognome FROM utenti WHERE (id_utente = ?)";
+            $statementUtente = $mysqli->prepare($queryUtente);
+            $statementUtente->bind_param("i", $idUtente);
+            if( $statementUtente->execute() ) {
+                $statementUtente->store_result();
+                $statementUtente->bind_result($nomeUtente, $cognomeUtente);
+                $statementUtente->fetch();
+            } else {
+                echo 'Si è verificato un errore.';
+            }
             $statement->close();
         }
     } else {
@@ -51,6 +60,7 @@ if(isset($_POST['addBtn'])) {
     // Esegui la query
     if($statement->execute()) {
         $messaggio = '<div class="alert alert-success mt-3" role="alert">Ingrediente modificato con successo.</div>';
+        $ultimaModifica = $modificaTempo;
     } else {
         $messaggio = '<div class="alert alert-danger mt-3" role="alert">Errore durante la modifica dell\'ingrediente.</div>';
     }
@@ -101,8 +111,8 @@ if(isset($_POST['addBtn'])) {
         </form>
         <div class="edit-form-properties">
             <div class="edit-form-properties-group">
-                <p class="edit-form-text fw-bold mt-2">Ultimo salvataggio: <?php echo date("d/m/Y - H:i", $ultimaModifica); ?></p>
-                <p class="edit-form-text fw-bold mt-2">Autore: <?php echo $idUtente; ?></p>
+                <span class="edit-form-text mt-2">Ultima modifica: <b><?php echo date("d/m/Y - H:i", strtotime($ultimaModifica)); ?></b></span>
+                <span class="edit-form-text mt-2">Autore: <b><?php echo $nomeUtente . ' ' . $cognomeUtente; ?></b></span>
             </div>
         </div>
     </div>

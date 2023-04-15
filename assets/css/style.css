@@ -127,6 +127,10 @@ body {
     margin-bottom: 0;
 }
 
+span.edit-form-text {
+    display: inline-block;
+}
+
 .edit-form-disclaimer {
     display: flex;
     align-items: center;
