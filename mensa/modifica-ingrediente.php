@@ -40,18 +40,24 @@ if( !isset( $_GET['id'] ) || !is_numeric( $_GET['id'] ) ) {
     } else {
         echo 'Si è verificato un errore.';
     }
+    // Mostra messaggio di aggiunta, se il redirect è avvenuto correttamente
+    if(!empty($_SESSION['messaggio'])) {
+        $messaggio = $_SESSION['messaggio'];
+        unset($_SESSION['messaggio']);
+    }
 }
 
 // Carica l'head e l'header
+require_once '../head.php';
 mensaHead('Modifica ' . $nome . ' | Mensa');
 require_once ABSPATH . '/layout/components/header.php';
 
 // Gestisci il form
 if(isset($_POST['addBtn'])) {
     // Ottieni i dati
-    $nome = $mysqli->real_escape_string($_POST['nome']);
-    $descrizione = $mysqli->real_escape_string($_POST['descrizione']);
-    $unitaMisura = $mysqli->real_escape_string($_POST['unita-misura']);
+    $nome = $_POST['nome'];
+    $descrizione = $_POST['descrizione'];
+    $unitaMisura = $_POST['unita-misura'];
     $modificaTempo = date('Y-m-d H:i:s');
     // Query per aggiungere l'ingrediente
     $query = "UPDATE ingredienti SET nome = ?, descrizione = ?, unita_misura = ?, ultima_modifica = ? WHERE id_ingrediente = ?";
@@ -59,7 +65,7 @@ if(isset($_POST['addBtn'])) {
     $statement->bind_param('ssssi', $nome, $descrizione, $unitaMisura, $modificaTempo, $idIngrediente);
     // Esegui la query
     if($statement->execute()) {
-        $messaggio = '<div class="alert alert-success mt-3" role="alert">Ingrediente modificato con successo.</div>';
+        $messaggio = '<div class="alert alert-success mt-3" role="alert">Ingrediente modificato con successo. <a href="visualizza-ingrediente.php?id=' . $idIngrediente . '">Visualizza ingrediente</a>.</div>';
         $ultimaModifica = $modificaTempo;
     } else {
         $messaggio = '<div class="alert alert-danger mt-3" role="alert">Errore durante la modifica dell\'ingrediente.</div>';
@@ -92,12 +98,18 @@ if(isset($_POST['addBtn'])) {
                 </div>
                 <div class="edit-form-group mt-4">
                     <label class="fw-bold mb-2" for="descrizione">Descrizione</label>
-                    <textarea name="descrizione" id="descrizione"></textarea>
+                    <textarea name="descrizione" id="descrizione"><?php echo $descrizione; ?></textarea>
                     <p class="edit-form-text text-muted mt-2">Inserisci la descrizione dell'ingrediente.</p>
                 </div>
                 <div class="edit-form-group mt-4">
                     <label class="fw-bold" for="unita-misura">Unità di misura</label>
-                    <input type="text" class="form-control mt-2" id="unita-misura" name="unita-misura" placeholder="Unità di misura" required value="<?php echo $unitaMisura; ?>">
+                    <select class="form-select mt-2" id="unita-misura" name="unita-misura" required>
+                        <option value="g" <?php if($unitaMisura == 'g') { echo 'selected'; } ?>>Grammi</option>
+                        <option value="kg" <?php if($unitaMisura == 'kg') { echo 'selected'; } ?>>Chilogrammi</option>
+                        <option value="l" <?php if($unitaMisura == 'l') { echo 'selected'; } ?>>Litri</option>
+                        <option value="ml" <?php if($unitaMisura == 'ml') { echo 'selected'; } ?>>Millilitri</option>
+                        <option value="pz" <?php if($unitaMisura == 'pz') { echo 'selected'; } ?>>Pezzi</option>
+                    </select>
                     <p class="edit-form-text text-muted mt-2">Inserisci l'unità di misura dell'ingrediente.</p>
                     <div class="edit-form-disclaimer mt-2">
                         <i class="fa-solid fa-circle-exclamation" style="color: #ff0000;"></i>
@@ -117,22 +129,24 @@ if(isset($_POST['addBtn'])) {
         </div>
     </div>
 </div>
-<!-- Embed TinyMCE -->
-<script src="<?php echo ABSPATH . '/assets/vendor/tinymce/tinymce.min.js'; ?>"></script>
-<script type="text/javascript">
-    tinymce.init({
-        selector: '#descrizione',
-        promotion: false,
-        language: 'it',
-        plugins: 'code, media',
-        setup: function (editor) {
-            editor.on('init', function () {
-                console.log('TinyMCE caricato correttamente!');
-                editor.setContent('<?php echo $descrizione; ?>');
-            });
-        }
-    });
+<!-- Embed CKEditor -->
+<script src="<?php echo ABSPATH . '/assets/vendor/ckeditor/ckeditor.js'; ?>"></script>
+<script src="<?php echo ABSPATH . '/assets/vendor/ckeditor/translations/it.js'; ?>"></script>
+<script>
+    ClassicEditor
+        .create( document.querySelector( '#descrizione' ), {
+            language: 'it',
+            height: '800',
+            mediaEmbed: {
+                previewsInData: true
+            },
+            toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'alignment', '|', 'blockQuote', 'insertTable', 'mediaEmbed', '|', 'undo', 'redo' ],
+        } )
+        .catch( error => {
+            console.error( error );
+        } );
 </script>
 <?php
+
 // Carica il footer
 require_once ABSPATH . '/layout/components/footer.php';

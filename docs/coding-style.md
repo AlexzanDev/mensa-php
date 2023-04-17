@@ -147,7 +147,7 @@ I **blocchi di codice** devono essere commentati.
 
 // Effettua una ricerca nella tabella degli utenti nel database e restituisce il risultato dopo la richiesta
 if (isset($_POST['ricercaBtn'])) {
-    $username = $mysqli->real_escape_string($_POST['ricerca']);
+    $username = $_POST['ricerca'];
     // Creazione query
     $query = "SELECT ID_utente, username, nome, cognome WHERE (username = ?)";
     // Preparazione query per esecuzione

@@ -1,7 +1,9 @@
 <?php
+
 // Importa il file di caricamento
 require_once '../load.php';
 // Carica l'head e l'header
+require_once '../head.php';
 mensaHead('Lista ingredienti | Mensa');
 require_once ABSPATH . '/layout/components/header.php';
 ?>

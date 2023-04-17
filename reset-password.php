@@ -3,6 +3,7 @@
 // Importa il file di caricamento
 require_once 'load.php';
 // Carica l'head
+require_once 'head.php';
 mensaHead('Ripristina la password');
 
 // Controlla se l'utente è loggato
@@ -33,9 +34,9 @@ function controlloPassword($password, $passwordVerifica) {
 if(isset($_POST['reimpostaBtn'])) {
     $passwordModificata = false;
     $utenteTrovato = false;
-    $username = $mysqli->real_escape_string($_POST['username']);
-    $password = $mysqli->real_escape_string($_POST['nuovaPassword']);
-    $passwordVerifica = $mysqli->real_escape_string($_POST['nuovaPasswordVerifica']);
+    $username = $_POST['username'];
+    $password = $_POST['nuovaPassword'];
+    $passwordVerifica = $_POST['nuovaPasswordVerifica'];
     // Controlla se le password inserite sono uguali
     if(controlloPassword($password, $passwordVerifica)) {
         // Cerca l'utente
