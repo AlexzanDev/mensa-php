@@ -4,7 +4,7 @@
 require_once '../load.php';
 
 // Controlla se un ID viene passato o meno
-if( !isset( $_GET['id'] ) || !is_numeric( $_GET['id'] ) ) {
+if(!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     echo 'ID ingrediente non valido.';
     exit();
 } else {
@@ -14,10 +14,10 @@ if( !isset( $_GET['id'] ) || !is_numeric( $_GET['id'] ) ) {
     $query = "SELECT nome, descrizione FROM ingredienti WHERE (id_ingrediente = ?)";
     $statement = $mysqli->prepare($query);
     $statement->bind_param("i", $idIngrediente);
-    if( $statement->execute() ) {
+    if($statement->execute()) {
         $statement->store_result();
         // Se non esiste un ingrediente con questo ID, mostra un messaggio di errore
-        if( $statement->num_rows == 0 ) {
+        if($statement->num_rows == 0) {
             echo 'Non esiste un ingrediente con questo ID.';
             $checkIngrediente = false;
             exit();

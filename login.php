@@ -14,7 +14,7 @@ function controlloLogin() {
 
 // Se l'utente è già loggato, reindirizza alla pagina principale
 if (controlloLogin()) {
-    header('Location: ' . 'index.php');
+    header('Location: index.php');
     exit;
 }
 
@@ -47,29 +47,34 @@ if(isset($_POST['loginBtn'])) {
             }
         }
     } else {
-        $messaggioLogin = '<div class="alert alert-danger" role="alert">Si è verificato un errore durante l\'accesso.</div>';
+        $messaggio = '<div class="alert alert-danger" role="alert">Si è verificato un errore durante l\'accesso.</div>';
     }
     // Chiudi la connessione
     $statement->close();
     // Mostra errore se le credenziali non sono corrette
     if(!$accessoEffettuato) {
-        $messaggioLogin = '<div class="alert alert-danger" role="alert">Le credenziali inserite non sono corrette.</div>';
+        $messaggio = '<div class="alert alert-danger" role="alert">Le credenziali inserite non sono corrette.</div>';
     }
+}
+
+// Mostra messaggio dopo il setup, se presente
+if(!empty($_SESSION['messaggio'])) {
+    $messaggio = $_SESSION['messaggio'];
+    unset($_SESSION['messaggio']);
 }
 
 // Carica l'head
 require_once 'head.php';
 mensaHead('Login');
-
 ?>
 
 <div class="vh-100 login-container d-flex justify-content-center align-items-center">
     <div class="login-wrapper">
-        <h1 class="login-titolo">Effettua l'accesso</h1>
+        <h1 class="login-titolo">Accedi</h1>
         <?php
-        // Mostra il messaggio di errore, se presente
-        if(isset($messaggioLogin)) { 
-            echo $messaggioLogin; 
+        // Mostra un messaggio, se presente
+        if(isset($messaggio)) { 
+            echo $messaggio; 
         } 
         ?>
         <form method="post" class="login-form">

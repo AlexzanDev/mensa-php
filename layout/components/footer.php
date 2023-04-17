@@ -7,6 +7,7 @@ if (!defined('ABSPATH')) {
 ?>
 
 <script src="<?php echo caricaAssets()[2] ?>"></script>
+<script src="<?php echo caricaAssets()[6] ?>"></script>
 <script src="<?php echo caricaAssets()[3] ?>"></script>
 </body>
 </html>

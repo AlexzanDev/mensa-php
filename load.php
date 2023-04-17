@@ -53,6 +53,22 @@ function controllaConnessioneDB() {
 }
 $mysqli = controllaConnessioneDB();
 
+// Reindirizza al setup se non esiste un utente nel database
+function controllaUtenti($mysqli) {
+    $query = "SELECT * FROM utenti";
+    $statement = $mysqli->prepare($query);
+    if($statement->execute()) {
+        $statement->store_result();
+        if($statement->num_rows == 0) {
+            header('Location: ' . ABSPATH . '/setup.php');
+        }
+    }
+    $statement->close();
+}
+if(!isset($_SESSION['utente']) && basename($_SERVER['PHP_SELF']) != 'setup.php') {
+    controllaUtenti($mysqli);
+}
+
 // Reindirizza utente in base al ruolo
 function controllaRuoloUtente($ruolo) {
     switch($ruolo):

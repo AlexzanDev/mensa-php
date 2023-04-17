@@ -4,7 +4,7 @@
 require_once '../load.php';
 
 // Controlla se un ID viene passato o meno
-if( !isset( $_GET['id'] ) || !is_numeric( $_GET['id'] ) ) {
+if(!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     echo 'ID ingrediente non valido.';
     exit();
 } else {
@@ -14,10 +14,10 @@ if( !isset( $_GET['id'] ) || !is_numeric( $_GET['id'] ) ) {
     $query = "SELECT id_ingrediente, nome, descrizione, unita_misura, ultima_modifica, id_utente FROM ingredienti WHERE (id_ingrediente = ?)";
     $statement = $mysqli->prepare($query);
     $statement->bind_param("i", $idIngrediente);
-    if( $statement->execute() ) {
+    if($statement->execute()) {
         $statement->store_result();
         // Se non esiste un ingrediente con questo ID, mostra un messaggio di errore
-        if( $statement->num_rows == 0 ) {
+        if($statement->num_rows == 0) {
             echo 'Non esiste un ingrediente con questo ID.';
             $checkIngrediente = false;
             exit();
@@ -28,7 +28,7 @@ if( !isset( $_GET['id'] ) || !is_numeric( $_GET['id'] ) ) {
             $queryUtente = "SELECT nome, cognome FROM utenti WHERE (id_utente = ?)";
             $statementUtente = $mysqli->prepare($queryUtente);
             $statementUtente->bind_param("i", $idUtente);
-            if( $statementUtente->execute() ) {
+            if($statementUtente->execute()) {
                 $statementUtente->store_result();
                 $statementUtente->bind_result($nomeUtente, $cognomeUtente);
                 $statementUtente->fetch();
@@ -141,6 +141,19 @@ if(isset($_POST['addBtn'])) {
                 previewsInData: true
             },
             toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'alignment', '|', 'blockQuote', 'insertTable', 'mediaEmbed', '|', 'undo', 'redo' ],
+            link: {
+                decorators: {
+                    openInNewTab: {
+                        mode: 'manual',
+                        label: 'Open in a new tab',
+                        defaultValue: true,
+                        attributes: {
+                            target: '_blank',
+                            rel: 'noopener noreferrer'
+                        }
+                    }
+                }
+            },
         } )
         .catch( error => {
             console.error( error );

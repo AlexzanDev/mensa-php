@@ -1,5 +1,10 @@
 <?php
 
+// Controlla se il file è stato richiamato direttamente
+if (!defined('ABSPATH')) {
+    die('Non puoi accedere a questo file.');
+}
+
 // Carica tutti gli assets
 function caricaAssets() {
     $bootstrapCSS = ABSPATH . '/assets/css/bootstrap.css';
@@ -7,8 +12,10 @@ function caricaAssets() {
     $jquery = ABSPATH . '/assets/js/jquery.js';
     $sitoScript = ABSPATH . '/assets/js/sito.js';
     $fontAwesome = ABSPATH . '/assets/vendor/fontawesome/css/fontawesome-all.css';
+    $jqueryUiCSS = ABSPATH . '/assets/vendor/jquery-ui/jquery-ui.min.css';
+    $jqueryUiJS = ABSPATH . '/assets/vendor/jquery-ui/jquery-ui.min.js';
 
-    return array($bootstrapCSS, $style, $jquery, $sitoScript, $fontAwesome);
+    return array($bootstrapCSS, $style, $jquery, $sitoScript, $fontAwesome, $jqueryUiCSS, $jqueryUiJS);
 }
 caricaAssets();
 
@@ -24,6 +31,7 @@ function mensaHead($titolo) {
         <link rel="stylesheet" href="' . caricaAssets()[0] . '">
         <link rel="stylesheet" href="' . caricaAssets()[1] . '">
         <link rel="stylesheet" href="' . caricaAssets()[4] . '">
+        <link rel="stylesheet" href="' . caricaAssets()[5] . '">
     </head>
     <body>';
 }
