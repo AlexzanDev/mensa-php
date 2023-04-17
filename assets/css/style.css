@@ -93,6 +93,9 @@ body {
         flex: 0 1 30%;
         margin-left: 30px;
     }
+    .dropdown-menu-end {
+        right: 0;
+    }
 }
 
 .heading-view-title {
