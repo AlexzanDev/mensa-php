@@ -56,7 +56,7 @@ require_once 'head.php';
 mensaHead('Setup');
 ?>
 
-<div class="vh-100 login-container d-flex justify-content-center align-items-center pt-3 pb-3">
+<div class="login-container d-flex justify-content-center align-items-center pt-3 pb-3">
     <div class="login-wrapper">
         <h1 class="login-titolo">Crea un utente amministratore</h1>
         <?php

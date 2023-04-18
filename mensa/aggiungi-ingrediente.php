@@ -24,6 +24,7 @@ if(isset($_POST['addBtn'])) {
     } else {
         $messaggio = '<div class="alert alert-danger mt-3" role="alert">Errore durante l\'aggiunta dell\'ingrediente.</div>';
     }
+    $statement->close();
 }
 
 // Carica l'head e l'header

@@ -2,17 +2,14 @@ $(document).ready(function() {
     console.log("Script caricato correttamente!");
 
     // Visualizza la password quando richiesto
-    const passwordInput = document.getElementById("password");
-    const passwordVerifica = document.getElementById("passwordVerifica");
-    $("body").on("click", "#password-eye, #verifica-password-eye", function () {
+    $("body").on("click", "#password-eye", function () {
         $(this).toggleClass("fa-eye fa-eye-slash");
-        // Controlla chi ha richiamato la funzione
-        if ($(this).attr("id") === "password-eye" || $(this).attr("id") === "verifica-password-eye") {
-            if (passwordInput.type === "password" || passwordVerifica.type === "password") {
-                $(passwordInput).attr("type", "text");
-            } else {
-                $(passwordInput).attr("type", "password");
-            }
+        // Mostra la password nell'input corretto
+        if($(this).attr("id") == "password-eye") {
+            // Cerca l'input nello stesso div
+            $(this).parent().find("input").attr("type", function(index, attr) {
+                return attr == "password" ? "text" : "password";
+            });
         }
     });
 
@@ -56,4 +53,49 @@ $(document).ready(function() {
     };
     $.datepicker.setDefaults($.datepicker.regional['it']);
     $("#dataNascita").datepicker();
+
+    // Gestisci ingredienti da nascondere se sono già stati aggiunti (modifica ricetta)
+    var ingredienti = [];
+    $('.ingrediente-elemento').each(function() {
+        ingredienti.push($(this).find('input[name="ingredienti[]"]').val());
+    });
+    for(var i = 0; i < ingredienti.length; i++) {
+        $('#ingredienti option[value="' + ingredienti[i] + '"]').prop('disabled', true);
+    }
+
+    // Gestione aggiunta ingredienti nella creazione ricetta
+    $('#addIngredienteBtn').click(function() {
+        var ingrediente = $('#ingredienti').val();
+        var quantita = $('#quantita').val();
+        if(ingrediente != '' && quantita != '') {
+            // Mostra il nome e l'unità di misura dell'ingrediente selezionato
+            var ingredienteNome = $('#ingredienti option:selected').text();
+            ingredienteNome = ingredienteNome.split(' (');
+            ingredienteNome = ingredienteNome[0];
+            var ingredienteUnita = $('#ingredienti option:selected').text();
+            ingredienteUnita = ingredienteUnita.split(' (');
+            ingredienteUnita = ingredienteUnita[1];
+            ingredienteUnita = ingredienteUnita.split(')');
+            ingredienteUnita = ingredienteUnita[0];
+            var nuovoIngrediente = '<div class="d-flex ingrediente-elemento">' + 
+                                    '<input type="hidden" name="ingredienti[]" value="' + ingrediente + '">'
+                                    + '<input type="hidden" name="quantita-' + ingrediente + '" value="' + quantita + '">'
+                                    + '<p class="edit-form-text mt-2">' + ingredienteNome + ': ' + quantita + ingredienteUnita + '</p>'
+                                    + '<button type="button" id="rimuoviIngredienteBtn" class="btn btn-danger mt-2"><i class="fas fa-times"></i></button></div>';
+            $('.ingredienti-group').append(nuovoIngrediente);
+            $('#ingredienti').val('');
+            $('#quantita').val('');
+            // Disabilita l'ingrediente selezionato
+            $('#ingredienti option[value="' + ingrediente + '"]').prop('disabled', true);
+        } else {
+            alert('Inserisci un ingrediente e la quantità!');
+        }
+    });
+    // Rimuove l'ingrediente selezionato
+    $(document).on('click', '#rimuoviIngredienteBtn', function() {
+        $(this).parent().remove();
+        // Abilita l'ingrediente selezionato
+        var ingrediente = $(this).parent().find('input[name="ingredienti[]"]').val();
+        $('#ingredienti option[value="' + ingrediente + '"]').prop('disabled', false);
+    });
 });

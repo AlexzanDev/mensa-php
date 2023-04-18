@@ -39,26 +39,17 @@ $sitoMenu = creaMenu();
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
                 <ul class="navbar-nav ms-auto">
                     <?php 
-                        // In base al livello dell'utente mostra il menu corrispondente
-                        if (isset($_SESSION['utente']['livello'])) {
-                            if ($_SESSION['utente']['livello'] == '3' || $_SESSION['utente']['livello'] == '4') {
-                                foreach ($sitoMenu[0] as $key => $value) {
-                                    echo '<li class="nav-item">
-                                        <a class="nav-link" href="' . $value . '">' . $key . '</a>
-                                    </li>';
-                                }
-                            } elseif ($_SESSION['utente']['livello'] == '2') {
-                                foreach ($sitoMenu[1] as $key => $value) {
-                                    echo '<li class="nav-item">
-                                        <a class="nav-link" href="' . $value . '">' . $key . '</a>
-                                    </li>';
-                                }
-                            } elseif ($_SESSION['utente']['livello'] == '1') {
-                                foreach ($sitoMenu[2] as $key => $value) {
-                                    echo '<li class="nav-item">
-                                        <a class="nav-link" href="' . $value . '">' . $key . '</a>
-                                    </li>';
-                                }
+                        if($_SESSION['nomeCartella'] == 'mensa') {
+                            foreach($sitoMenu[0] as $titolo => $url) {
+                                echo '<li class="nav-item"><a class="nav-link" href="' . $url . '">' . $titolo . '</a></li>';
+                            }
+                        } elseif($_SESSION['nomeCartella'] == 'magazzino') {
+                            foreach($sitoMenu[1] as $titolo => $url) {
+                                echo '<li class="nav-item"><a class="nav-link" href="' . $url . '">' . $titolo . '</a></li>';
+                            }
+                        } elseif($_SESSION['nomeCartella'] == 'admin') {
+                            foreach($sitoMenu[2] as $titolo => $url) {
+                                echo '<li class="nav-item"><a class="nav-link" href="' . $url . '">' . $titolo . '</a></li>';
                             }
                         }
                     ?>
@@ -66,6 +57,9 @@ $sitoMenu = creaMenu();
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"><?php echo $_SESSION['utente']['nome'] . ' ' . $_SESSION['utente']['cognome']; ?></a>
                         <ul id="dropdown" class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="<?php echo ABSPATH . '/admin/modifica-utente.php?id=' . $_SESSION['utente']['id_utente']; ?>">Modifica utente</a></li>
+                            <?php if($_SESSION['utente']['livello'] == 1) { ?>
+                                <li><a class="dropdown-item" href="<?php echo ABSPATH . '/admin/lista-utenti.php'; ?>">Amministrazione</a></li>
+                            <?php } ?>
                             <li><a class="dropdown-item" href="<?php echo ABSPATH . '/logout.php' ?>">Logout</a></li>
                         </ul>
                     </li>

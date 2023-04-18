@@ -120,7 +120,7 @@ body {
     padding: 15px;
 }
 
-.edit-form, .edit-form-properties-group {
+.edit-form, .edit-form-properties-group, .ricetta-tempi, .ricetta-ingredienti {
     border: 1px solid #ccc;
     padding: 20px;
     border-radius: 10px;
@@ -188,4 +188,45 @@ span.edit-form-text {
 
 .login-wrapper .page-navigation {
     text-align: center;
+}
+
+.ingrediente-elemento {
+    gap: 10px;
+}
+
+.ingrediente-row {
+    margin-top: 10px;
+    align-items: center;
+}
+
+.ricetta-tempi {
+    display: inline-flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.ricetta-tempi p {
+    margin: 0;
+}
+
+.ricetta-tempi p.fw-bold {
+    margin-bottom: 10px;
+}
+
+.ricetta-ingredienti {
+    margin-top: 20px;
+}
+
+.ricetta-ingredienti ul:last-of-type {
+    margin-bottom: 0;
+}
+
+.ingrediente-testo p, .ricetta-preparazione p {
+    font-size: 17px;
+    line-height: 1.7em;
+}
+
+.lista-small-text {
+    font-size: 12px;
+    text-decoration: none;
 }

@@ -6,7 +6,7 @@ require_once '../load.php';
 // Ottieni ingredienti da database
 $query = "SELECT id_ingrediente, nome, unita_misura FROM ingredienti";
 $statement = $mysqli->prepare($query);
-if($statement->execute()) {
+if ($statement->execute()) {
     $statement->store_result();
     $statement->bind_result($idIngrediente, $nome, $unitaMisura);
     $ingredienti = array();
@@ -21,50 +21,6 @@ if($statement->execute()) {
     }
 }
 $statement->close();
-
-// Controlla se un ID viene passato o meno
-if(!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-    echo 'ID ricetta non valido.';
-    exit();
-} else {
-    // Se l'ID è valido, controlla se esiste una ricetta con questo ID
-    $idRicetta = $_GET['id'];
-    $checkRicetta = true;
-    $query = "SELECT id_ricetta, nome, descrizione, ultima_modifica, tempo_preparazione, tempo_cottura, sommario, id_utente FROM ricette WHERE (id_ricetta = ?)";
-    $statement = $mysqli->prepare($query);
-    $statement->bind_param("i", $idRicetta);
-    if($statement->execute()) {
-        $statement->store_result();
-        // Se non esiste una ricetta con questo ID, mostra un messaggio di errore
-        if($statement->num_rows == 0) {
-            echo 'Non esiste una ricetta con questo ID.';
-            $checkRicetta = false;
-            exit();
-        } else {
-            // Se esiste una ricetta con questo ID, salva i dati
-            $statement->bind_result($idRicetta, $nome, $descrizione, $ultimaModifica, $tempoPreparazione, $tempoCottura, $sommario, $idUtente); // Abbina i risultati della query alle variabili
-            $statement->fetch(); // Estrae i risultati dalla query
-            $queryUtente = "SELECT nome, cognome FROM utenti WHERE (id_utente = ?)";
-            $statementUtente = $mysqli->prepare($queryUtente);
-            $statementUtente->bind_param("i", $idUtente);
-            if($statementUtente->execute()) {
-                $statementUtente->store_result();
-                $statementUtente->bind_result($nomeUtente, $cognomeUtente);
-                $statementUtente->fetch();
-            } else {
-                echo 'Si è verificato un errore.';
-            }
-            $statement->close();
-        }
-    } else {
-        echo 'Si è verificato un errore.';
-    }
-    // Mostra messaggio di aggiunta, se il redirect è avvenuto correttamente
-    if(!empty($_SESSION['messaggio'])) {
-        $messaggio = $_SESSION['messaggio'];
-        unset($_SESSION['messaggio']);
-    }
-}
 
 // Gestisci il form
 if(isset($_POST['addBtn'])) {
@@ -82,16 +38,13 @@ if(isset($_POST['addBtn'])) {
         $messaggio = '<div class="alert alert-danger mt-3" role="alert">Compila tutti i campi.</div>';
     } else {
         // Inserisci la ricetta nel database
-        $query = "UPDATE ricette SET nome = ?, descrizione = ?, tempo_preparazione = ?, tempo_cottura = ?, ultima_modifica = ?, sommario = ?, id_utente = ? WHERE id_ricetta = ?";
+        $query = "INSERT INTO ricette (nome, descrizione, tempo_preparazione, tempo_cottura, ultima_modifica, sommario, id_utente) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $statement = $mysqli->prepare($query);
-        $statement->bind_param('ssiissii', $nome, $descrizione, $tempoPreparazione, $tempoCottura, $ultimaModifica, $sommario, $idUtente, $idRicetta);
+        $statement->bind_param('ssiissi', $nome, $descrizione, $tempoPreparazione, $tempoCottura, $ultimaModifica, $sommario, $idUtente);
         if($statement->execute()) {
-            // Elimina le correlazioni tra gli ingredienti e la ricetta
-            $query = "DELETE FROM correlazioniir WHERE id_ricetta = ?";
-            $statement = $mysqli->prepare($query);
-            $statement->bind_param('i', $idRicetta);
-            $statement->execute();
-            // Inserisci le correlazioni tra gli ingredienti e la ricetta
+            // Ottieni l'ID della ricetta
+            $idRicetta = $mysqli->insert_id;
+            // Controlla gli ingredienti
             foreach($ingredientiRicetta as $ingrediente) {
                 $idIngrediente = $ingrediente;
                 $quantita = $_POST['quantita-' . $idIngrediente];
@@ -101,44 +54,25 @@ if(isset($_POST['addBtn'])) {
                 $statement->bind_param('iii', $quantita, $idRicetta, $idIngrediente);
                 $statement->execute();
             }
-            $statement->close();
-            $messaggio = '<div class="alert alert-success mt-3" role="alert">Ricetta modificata con successo. <a href="visualizza-ricetta.php?id=' . $idRicetta . '">Visualizza ricetta</a>.</div>';
+            $messaggio = '<div class="alert alert-success mt-3" role="alert">Ricetta aggiunta con successo. <a href="visualizza-ricetta.php?id=' . $idRicetta . '">Visualizza ricetta</a>.</div>';
+            $_SESSION['messaggio'] = $messaggio;
+            header('Location: modifica-ricetta.php?id=' . $idRicetta . '');    
         } else {
-            $messaggio = '<div class="alert alert-danger mt-3" role="alert">Errore durante la modifica della ricetta.</div>';
+            $messaggio = '<div class="alert alert-danger mt-3" role="alert">Errore durante l\'aggiunta della ricetta.</div>';
         }
+        $statement->close();
     }
 }
-
-// Ottieni gli ingredienti della ricetta
-$queryIngredienti = "SELECT c.id_ingrediente, c.quantita, i.nome, i.unita_misura FROM correlazioniir c, ingredienti i WHERE (id_ricetta = ? AND c.id_ingrediente = i.id_ingrediente)";
-$statementIngredienti = $mysqli->prepare($queryIngredienti);
-$statementIngredienti->bind_param("i", $idRicetta);
-if($statementIngredienti->execute()) {
-    $statementIngredienti->store_result();
-    $statementIngredienti->bind_result($idIngrediente, $quantita, $nomeIngrediente, $unitaMisura);
-    $ingredientiRicetta = array();
-    // Salva gli ingredienti in un array
-    while ($statementIngredienti->fetch()) {
-        $ingredienteRicetta = array(
-            'id_ingrediente' => $idIngrediente,
-            'nome' => $nomeIngrediente,
-            'quantita' => $quantita,
-            'unita_misura' => $unitaMisura
-        );
-        array_push($ingredientiRicetta, $ingredienteRicetta);
-    }
-}
-$statementIngredienti->close();
 
 // Carica l'head e l'header
 require_once '../head.php';
-mensaHead('Modifica ' . $nome . ' | Mensa');
+mensaHead('Aggiungi ricetta | Mensa');
 require_once ABSPATH . '/layout/components/header.php';
 ?>
 <div class="container mt-3">
     <div class="heading-view">
         <div class="heading-view-title">
-            <h1>Modifica <?php echo $nome; ?></h1>
+            <h1>Aggiungi ricetta</h1>
         </div>
     </div>
     <?php
@@ -151,7 +85,7 @@ require_once ABSPATH . '/layout/components/header.php';
             <div class="edit-form-content">
                 <div class="edit-form-group">
                     <label class="fw-bold" for="nome">Nome</label>
-                    <input type="text" class="form-control mt-2" id="nome" name="nome" placeholder="Nome" required value="<?php echo $nome; ?>">
+                    <input type="text" class="form-control mt-2" id="nome" name="nome" placeholder="Nome" required>
                     <p class="edit-form-text text-muted mt-2">Inserisci il nome della ricetta.</p>
                     <div class="edit-form-disclaimer mt-2">
                         <i class="fa-solid fa-circle-exclamation" style="color: #ff0000;"></i>
@@ -160,7 +94,7 @@ require_once ABSPATH . '/layout/components/header.php';
                 </div>
                 <div class="edit-form-group mt-4">
                     <label class="fw-bold mb-2" for="descrizione">Descrizione</label>
-                    <textarea name="descrizione" id="descrizione"><?php echo $descrizione; ?></textarea>
+                    <textarea name="descrizione" id="descrizione"></textarea>
                     <p class="edit-form-text text-muted mt-2">Inserisci la descrizione della ricetta.</p>
                 </div>
                 <div class="edit-form-group ingredienti-group mt-4">
@@ -187,23 +121,10 @@ require_once ABSPATH . '/layout/components/header.php';
                         <i class="fa-solid fa-circle-exclamation" style="color: #ff0000;"></i>
                         <p class="edit-form-text ms-1 text-danger">Campo richiesto.</p>
                     </div>
-                    <?php
-                    // Mostra gli ingredienti già presenti
-                    foreach($ingredientiRicetta as $ingrediente) {
-                        $ingredienteNome = $ingrediente['nome'];
-                        $ingredienteUnita = $ingrediente['unita_misura'];
-                        $quantita = $ingrediente['quantita'];
-                        echo '<div class="d-flex ingrediente-elemento">' . 
-                                    '<input type="hidden" name="ingredienti[]" value="' . $ingrediente['id_ingrediente'] . '">'
-                                    . '<input type="hidden" name="quantita-' . $ingrediente['id_ingrediente'] . '" value="' . $quantita . '">'
-                                    . '<p class="edit-form-text mt-2">' . $ingredienteNome . ': ' . $quantita . $ingredienteUnita . '</p>'
-                                    . '<button type="button" id="rimuoviIngredienteBtn" class="btn btn-danger mt-2"><i class="fas fa-times"></i></button></div>';
-                    }
-                    ?>
                 </div>
                 <div class="edit-form-group mt-4">
                     <label class="fw-bold" for="tempo-preparazione">Tempo di preparazione</label>
-                    <input type="number" min="1" class="form-control mt-2" id="tempo-preparazione" name="tempo-preparazione" placeholder="Tempo di preparazione" required value="<?php echo $tempoPreparazione; ?>">
+                    <input type="number" min="1" class="form-control mt-2" id="tempo-preparazione" name="tempo-preparazione" placeholder="Tempo di preparazione" required>
                     <p class="edit-form-text text-muted mt-2">Inserisci il tempo di preparazione della ricetta in minuti.</p>
                     <div class="edit-form-disclaimer mt-2">
                         <i class="fa-solid fa-circle-exclamation" style="color: #ff0000;"></i>
@@ -212,12 +133,12 @@ require_once ABSPATH . '/layout/components/header.php';
                 </div>
                 <div class="edit-form-group mt-4">
                     <label class="fw-bold" for="tempo-cottura">Tempo di cottura</label>
-                    <input type="number" min="1" class="form-control mt-2" id="tempo-cottura" name="tempo-cottura" placeholder="Tempo di cottura" value="<?php echo $tempoCottura; ?>">
+                    <input type="number" min="1" class="form-control mt-2" id="tempo-cottura" name="tempo-cottura" placeholder="Tempo di cottura">
                     <p class="edit-form-text text-muted mt-2">Inserisci il tempo di cottura della ricetta (se presente) in minuti.</p>
                 </div>
                 <div class="edit-form-group mt-4">
                     <label class="fw-bold" for="sommario">Sommario</label>
-                    <input type="text" class="form-control mt-2" id="sommario" name="sommario" placeholder="Sommario" value="<?php echo $sommario; ?>">
+                    <input type="text" class="form-control mt-2" id="sommario" name="sommario" placeholder="Sommario">
                     <p class="edit-form-text text-muted mt-2">Breve descrizione del piatto da mostrare nella lista delle ricette.</p>
                 </div>
             </div>
@@ -225,12 +146,6 @@ require_once ABSPATH . '/layout/components/header.php';
                 <button type="submit" class="btn btn-primary" name="addBtn">Salva</button>
             </div>
         </form>
-        <div class="edit-form-properties">
-            <div class="edit-form-properties-group">
-                <span class="edit-form-text mt-2">Ultima modifica: <b><?php echo date("d/m/Y - H:i", strtotime($ultimaModifica)); ?></b></span>
-                <span class="edit-form-text mt-2">Autore: <b><?php echo $nomeUtente . ' ' . $cognomeUtente; ?></b></span>
-            </div>
-        </div>
     </div>
 </div>
 <!-- Embed CKEditor -->

@@ -2,9 +2,6 @@
 
 // Importa il file di caricamento
 require_once 'load.php';
-// Carica l'head
-require_once 'head.php';
-mensaHead('Ripristina la password');
 
 // Controlla se l'utente è loggato
 function controlloLogin() {
@@ -69,6 +66,10 @@ if(isset($_POST['reimpostaBtn'])) {
         $messaggioRipristino = '<div class="alert alert-danger" role="alert">Le password inserite non corrispondono.</div>';
     }
 }
+
+// Carica l'head
+require_once 'head.php';
+mensaHead('Ripristina la password');
 ?>
 
 <div class="vh-100 login-container d-flex justify-content-center align-items-center">
@@ -97,8 +98,8 @@ if(isset($_POST['reimpostaBtn'])) {
             <div class="form-group mb-4">
                 <label class="mb-2 fw-bold" for="password">Conferma la nuova password</label>
                 <div class="login-password-container">
-                    <input type="password" name="nuovaPasswordVerifica" id="passwordVerifica" class="form-control login-form-input" placeholder="Conferma password" required>
-                    <i id="verifica-password-eye" class="fa-solid fa-eye login-password-eye"></i>
+                    <input type="password" name="nuovaPasswordVerifica" id="password" class="form-control login-form-input" placeholder="Conferma password" required>
+                    <i id="password-eye" class="fa-solid fa-eye login-password-eye"></i>
                 </div>
             </div>
             <div class="form-group mb-4">
