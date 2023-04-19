@@ -15,6 +15,7 @@ function mb_basename($path) {
 
 // Ottieni il nome della cartella da cui viene richiamato il file
 $nomeCartella = mb_basename(getcwd());
+$_SESSION['nomeCartella'] = $nomeCartella;
 
 // Definisci i path assoluti per richiamare i file
 if(!defined('ABSPATH')) {

@@ -46,7 +46,8 @@ require_once ABSPATH . '/layout/components/header.php';
                     ?>
                         <tr>
                             <td>
-                                <a class="link-primary table-link" href="modifica-ingrediente.php?id=<?php echo $idIngrediente; ?>"><?php echo $nome; ?></a>
+                                <a class="link-primary table-link" href="visualizza-ingrediente.php?id=<?php echo $idIngrediente; ?>"><?php echo $nome; ?></a>
+                                <a class="lista-small-text" href="modifica-ingrediente.php?id=<?php echo $idIngrediente; ?>">Modifica</a>
                             </td>
                             <td><?php echo strip_tags($descrizione); ?></td>
                             <td><?php echo $unitaMisura; ?></td>
@@ -69,4 +70,3 @@ require_once ABSPATH . '/layout/components/header.php';
 <?php
 // Carica il footer
 require_once ABSPATH . '/layout/components/footer.php';
-?>

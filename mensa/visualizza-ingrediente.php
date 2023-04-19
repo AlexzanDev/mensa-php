@@ -32,6 +32,28 @@ if(!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     }
 }
 
+// Mostra ricette che contengono questo ingrediente
+$queryRicette = "SELECT r.id_ricetta, r.nome FROM correlazioniir c, ricette r WHERE (c.id_ingrediente = ? AND c.id_ricetta = r.id_ricetta)";
+$statementRicette = $mysqli->prepare($queryRicette);
+$statementRicette->bind_param("i", $idIngrediente);
+if($statementRicette->execute()) {
+    $statementRicette->store_result();
+    if($statementRicette->num_rows > 0) {
+        $statementRicette->bind_result($idRicetta, $nomeRicetta); // Abbina i risultati della query alle variabili
+        $ricette = array();
+        while($statementRicette->fetch()) {
+            $ricette[] = array(
+                'id' => $idRicetta,
+                'nome' => $nomeRicetta
+            );
+        }
+        $checkRicette = true;
+        $statementRicette->close();
+    } else {
+        $checkRicette = false;
+    }
+}
+
 // Carica l'head e l'header
 require_once '../head.php';
 mensaHead($nome . ' | Mensa');
@@ -47,7 +69,25 @@ require_once ABSPATH . '/layout/components/header.php';
     <div class="content-view">
         <div class="content-view-body">
             <div class="content-view-body-text">
-                <p><?php echo $descrizione; ?></p>
+                <div class="ingrediente-testo">
+                    <p><?php echo $descrizione; ?></p>
+                    <?php 
+                    if($checkRicette) {
+                        echo '<div class="ingrediente-ricette">';
+                        echo '<h3>Ricette che contengono questo ingrediente</h3>';
+                        echo '<ul>';
+                        foreach($ricette as $ricetta) {
+                            echo '<li><a href="' . ABSPATH . '/mensa/visualizza-ricetta.php?id=' . $ricetta['id'] . '">' . $ricetta['nome'] . '</a></li>';
+                        }
+                        echo '</ul>';
+                        echo '</div>';
+                    } else {
+                        echo '<div class="ingrediente-ricette">';
+                        echo '<p>Questo ingrediente non è contenuto in nessuna ricetta.</p>';
+                        echo '</div>';
+                    }
+                    ?>
+                </div>
             </div>
         </div>
     </div>
