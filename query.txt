@@ -54,7 +54,10 @@ CREATE TABLE magazzino (
     ultima_modifica DATETIME NOT NULL,
     stato BOOLEAN NOT NULL,
     id_utente INT NOT NULL,
-    FOREIGN KEY (id_utente) REFERENCES utenti(id_utente)
+    id_ingrediente INT NOT NULL,
+    FOREIGN KEY (id_utente) REFERENCES utenti(id_utente),
+    FOREIGN KEY (id_ingrediente) REFERENCES ingredienti(id_ingrediente)
+
 );
 
 INSERT INTO utenti (nome, cognome, email, username, password, indirizzo, telefono, codice_fiscale, data_nascita, livello)
