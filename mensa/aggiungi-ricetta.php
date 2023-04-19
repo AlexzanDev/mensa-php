@@ -35,7 +35,9 @@ if(isset($_POST['addBtn'])) {
     // Ottieni i dati
     $nome = $_POST['nome'];
     $descrizione = $_POST['descrizione'];
-    $ingredientiRicetta = $_POST['ingredienti'];
+    if(isset($_POST['ingredienti'])) {
+        $ingredientiRicetta = $_POST['ingredienti'];
+    }
     $tempoPreparazione = $_POST['tempo-preparazione'];
     $tempoCottura = $_POST['tempo-cottura'];
     $ultimaModifica = date('Y-m-d H:i:s');
@@ -45,30 +47,41 @@ if(isset($_POST['addBtn'])) {
     if(empty($nome) || empty($ingredientiRicetta) || empty($tempoPreparazione)) {
         $messaggio = '<div class="alert alert-danger mt-3" role="alert">Compila tutti i campi.</div>';
     } else {
-        // Inserisci la ricetta nel database
-        $query = "INSERT INTO ricette (nome, descrizione, tempo_preparazione, tempo_cottura, ultima_modifica, sommario, id_utente) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        // Controlla se la ricetta esiste già
+        $query = "SELECT id_ricetta FROM ricette WHERE nome = ?";
         $statement = $mysqli->prepare($query);
-        $statement->bind_param('ssiissi', $nome, $descrizione, $tempoPreparazione, $tempoCottura, $ultimaModifica, $sommario, $idUtente);
-        if($statement->execute()) {
-            // Ottieni l'ID della ricetta
-            $idRicetta = $mysqli->insert_id;
-            // Controlla gli ingredienti
-            foreach($ingredientiRicetta as $ingrediente) {
-                $idIngrediente = $ingrediente;
-                $quantita = $_POST['quantita-' . $idIngrediente];
-                // Inserisci la correlazione tra ricetta e ingrediente nel database
-                $query = "INSERT INTO correlazioniir (quantita, id_ricetta, id_ingrediente) VALUES (?, ?, ?)";
+        $statement->bind_param('s', $nome);
+        if ($statement->execute()) {
+            $statement->store_result();
+            if($statement->num_rows > 0) {
+                $messaggio = '<div class="alert alert-danger mt-3" role="alert">La ricetta esiste già.</div>';
+            } else {
+                // Inserisci la ricetta nel database
+                $query = "INSERT INTO ricette (nome, descrizione, tempo_preparazione, tempo_cottura, ultima_modifica, sommario, id_utente) VALUES (?, ?, ?, ?, ?, ?, ?)";
                 $statement = $mysqli->prepare($query);
-                $statement->bind_param('iii', $quantita, $idRicetta, $idIngrediente);
-                $statement->execute();
+                $statement->bind_param('ssiissi', $nome, $descrizione, $tempoPreparazione, $tempoCottura, $ultimaModifica, $sommario, $idUtente);
+                if($statement->execute()) {
+                    // Ottieni l'ID della ricetta
+                    $idRicetta = $mysqli->insert_id;
+                    // Controlla gli ingredienti
+                    foreach($ingredientiRicetta as $ingrediente) {
+                        $idIngrediente = $ingrediente;
+                        $quantita = $_POST['quantita-' . $idIngrediente];
+                        // Inserisci la correlazione tra ricetta e ingrediente nel database
+                        $query = "INSERT INTO correlazioniir (quantita, id_ricetta, id_ingrediente) VALUES (?, ?, ?)";
+                        $statement = $mysqli->prepare($query);
+                        $statement->bind_param('iii', $quantita, $idRicetta, $idIngrediente);
+                        $statement->execute();
+                    }
+                    $messaggio = '<div class="alert alert-success mt-3" role="alert">Ricetta aggiunta con successo. <a href="visualizza-ricetta.php?id=' . $idRicetta . '">Visualizza ricetta</a>.</div>';
+                    $_SESSION['messaggio'] = $messaggio;
+                    header('Location: modifica-ricetta.php?id=' . $idRicetta . '');    
+                } else {
+                    $messaggio = '<div class="alert alert-danger mt-3" role="alert">Errore durante l\'aggiunta della ricetta.</div>';
+                }
+                $statement->close();
             }
-            $messaggio = '<div class="alert alert-success mt-3" role="alert">Ricetta aggiunta con successo. <a href="visualizza-ricetta.php?id=' . $idRicetta . '">Visualizza ricetta</a>.</div>';
-            $_SESSION['messaggio'] = $messaggio;
-            header('Location: modifica-ricetta.php?id=' . $idRicetta . '');    
-        } else {
-            $messaggio = '<div class="alert alert-danger mt-3" role="alert">Errore durante l\'aggiunta della ricetta.</div>';
         }
-        $statement->close();
     }
 }
 

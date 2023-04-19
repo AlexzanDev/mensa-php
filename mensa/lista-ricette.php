@@ -21,6 +21,7 @@ require_once ABSPATH . '/layout/components/header.php';
         <div class="heading-view-title">
             <h1>Ricette</h1>
             <?php
+            // Mostra il pulsante di aggiunta solo se l'utente ha i permessi
             if($_SESSION['utente']['livello'] != 2 && $_SESSION['utente']['livello'] != 3 && $_SESSION['utente']['livello'] != 5) {
                 echo '<a class="ms-3" href="aggiungi-ricetta.php">
                         <button class="btn btn-outline-dark fs-6 fw-bold">Aggiungi nuovo</button>
@@ -31,7 +32,7 @@ require_once ABSPATH . '/layout/components/header.php';
         <input id="ricerca" type="text" class="form-control search-input" placeholder="Cerca ricetta">
     </div>
     <?php
-    // Query per ottenere gli ingredienti
+    // Query per ottenere la ricetta
     $query = "SELECT nome, sommario, tempo_preparazione, tempo_cottura, id_ricetta FROM ricette";
     $statement = $mysqli->prepare($query);
     // Esegui la query

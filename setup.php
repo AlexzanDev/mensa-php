@@ -91,12 +91,13 @@ mensaHead('Setup');
                     <input type="password" name="password" id="password" class="form-control login-form-input" placeholder="Inserisci la password" required>
                     <i id="password-eye" class="fa-solid fa-eye login-password-eye"></i>
                 </div>
+                <p class="form-text text-muted passwordAiuto">La password deve contenere almeno 8 caratteri, un numero, una lettera maiuscola e una minuscola.</p>
             </div>
             <div class="form-group mb-4">
                 <label class="mb-2 fw-bold" for="passwordVerifica">Conferma la nuova password</label>
                 <div class="login-password-container">
                     <input type="password" name="passwordVerifica" id="passwordVerifica" class="form-control login-form-input" placeholder="Conferma password" required pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}">
-                    <i id="verifica-password-eye" class="fa-solid fa-eye login-password-eye"></i>
+                    <i id="password-eye" class="fa-solid fa-eye login-password-eye"></i>
                 </div>
                 <p class="form-text text-muted passwordAiuto">La password deve contenere almeno 8 caratteri, un numero, una lettera maiuscola e una minuscola.</p>
             </div>

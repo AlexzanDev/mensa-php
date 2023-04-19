@@ -19,20 +19,34 @@ if(isset($_POST['addBtn'])) {
     $unitaMisura = $_POST['unita-misura'];
     $ultimaModifica = date('Y-m-d H:i:s');
     $idUtente = $_SESSION['utente']['id_utente'];
-    // Query per aggiungere l'ingrediente
-    $query = "INSERT INTO ingredienti (nome, descrizione, unita_misura, ultima_modifica, id_utente) VALUES (?, ?, ?, ?, ?)";
-    $statement = $mysqli->prepare($query);
-    $statement->bind_param('ssssi', $nome, $descrizione, $unitaMisura, $ultimaModifica, $idUtente);
-    // Esegui la query
-    if($statement->execute()) {
-        $idIngrediente = $statement->insert_id;
-        $messaggio = '<div class="alert alert-success mt-3" role="alert">Ingrediente aggiunto con successo. <a href="visualizza-ingrediente.php?id=' . $idIngrediente . '">Visualizza ingrediente</a>.</div>';
-        $_SESSION['messaggio'] = $messaggio;
-        header('Location: modifica-ingrediente.php?id=' . $idIngrediente . '');
+    if(empty($nome) || empty($descrizione) || empty($unitaMisura)) {
+        $messaggio = '<div class="alert alert-danger mt-3" role="alert">Compila tutti i campi.</div>';
     } else {
-        $messaggio = '<div class="alert alert-danger mt-3" role="alert">Errore durante l\'aggiunta dell\'ingrediente.</div>';
+        // Controlla se l'ingrediente esiste già
+        $query = "SELECT * FROM ingredienti WHERE nome = ?";
+        $statement = $mysqli->prepare($query);
+        $statement->bind_param('s', $nome);
+        $statement->execute();
+        $result = $statement->get_result();
+        if($result->num_rows > 0) {
+            $messaggio = '<div class="alert alert-danger mt-3" role="alert">L\'ingrediente esiste già.</div>';
+        } else {
+            // Query per aggiungere l'ingrediente
+            $query = "INSERT INTO ingredienti (nome, descrizione, unita_misura, ultima_modifica, id_utente) VALUES (?, ?, ?, ?, ?)";
+            $statement = $mysqli->prepare($query);
+            $statement->bind_param('ssssi', $nome, $descrizione, $unitaMisura, $ultimaModifica, $idUtente);
+            // Esegui la query
+            if($statement->execute()) {
+                $idIngrediente = $statement->insert_id;
+                $messaggio = '<div class="alert alert-success mt-3" role="alert">Ingrediente aggiunto con successo. <a href="visualizza-ingrediente.php?id=' . $idIngrediente . '">Visualizza ingrediente</a>.</div>';
+                $_SESSION['messaggio'] = $messaggio;
+                header('Location: modifica-ingrediente.php?id=' . $idIngrediente . '');
+            } else {
+                $messaggio = '<div class="alert alert-danger mt-3" role="alert">Errore durante l\'aggiunta dell\'ingrediente.</div>';
+            }
+            $statement->close();
+        }
     }
-    $statement->close();
 }
 
 // Carica l'head e l'header

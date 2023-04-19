@@ -235,3 +235,7 @@ span.edit-form-text {
     margin-top: 10px;
     font-size: 14px;
 }
+
+.lista-small-text {
+    display: block;
+}
