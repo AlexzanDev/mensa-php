@@ -16,6 +16,7 @@ function creaMenu() {
     $menuCuoco = array(
         'Lista ricette' => ABSPATH . '/mensa/lista-ricette.php',
         'Lista ingredienti' => ABSPATH . '/mensa/lista-ingredienti.php',
+        'Magazzino' => ABSPATH . '/magazzino/lista-lotti.php',
     );
     $menuMagazzino = array(
         'Aggiungi lotto' => ABSPATH . '/magazzino/aggiungi-lotto.php',
@@ -23,8 +24,10 @@ function creaMenu() {
         'Archivio lotti' => ABSPATH . '/magazzino/archivio-lotti.php',
     );
     $menuAdmin = array(
-        'Mensa' => ABSPATH . '/mensa/lista-ingredienti.php',
+        'Lista ingredienti' => ABSPATH . '/mensa/lista-ingredienti.php',
+        'Lista ricette' => ABSPATH . '/mensa/lista-ricette.php',
         'Magazzino' => ABSPATH . '/magazzino/lista-lotti.php',
+        'Lotti archiviati' => ABSPATH . '/magazzino/archivio-lotti.php',
         'Lista utenti' => ABSPATH . '/admin/lista-utenti.php',
     );
     return array($menuFoodManager, $menuCuoco, $menuMagazzino, $menuAdmin);
@@ -44,35 +47,41 @@ $sitoMenu = creaMenu();
                 <ul class="navbar-nav ms-auto">
                     <?php 
                         if(isset($_SESSION['utente'])) {
+                            // Amministratore
                             if($_SESSION['utente']['livello'] == 1) {
                                 foreach($sitoMenu[3] as $titolo => $url) {
                                     echo '<li class="nav-item"><a class="nav-link" href="' . $url . '">' . $titolo . '</a></li>';
                                 }
+                            // Magazziniere 
                             } else if($_SESSION['utente']['livello'] == 2) {
                                 foreach($sitoMenu[2] as $titolo => $url) {
                                     echo '<li class="nav-item"><a class="nav-link" href="' . $url . '">' . $titolo . '</a></li>';
                                 }
+                            // Cuoco
                             } else if($_SESSION['utente']['livello'] == 3) {
                                 foreach($sitoMenu[1] as $titolo => $url) {
                                     echo '<li class="nav-item"><a class="nav-link" href="' . $url . '">' . $titolo . '</a></li>';
                                 }
+                            // Food Manager
                             } else if($_SESSION['utente']['livello'] == 4) {
                                 foreach($sitoMenu[0] as $titolo => $url) {
                                     echo '<li class="nav-item"><a class="nav-link" href="' . $url . '">' . $titolo . '</a></li>';
                                 }
                             }
+                            ?>
+                            <li id="menuDropdown" class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"><?php echo $_SESSION['utente']['nome'] . ' ' . $_SESSION['utente']['cognome']; ?></a>
+                                <ul id="dropdown" class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" href="<?php echo ABSPATH . '/admin/modifica-utente.php?id=' . $_SESSION['utente']['id_utente']; ?>">Modifica utente</a></li>
+                                    <?php if($_SESSION['utente']['livello'] == 1) { ?>
+                                        <li><a class="dropdown-item" href="<?php echo ABSPATH . '/admin/lista-utenti.php'; ?>">Amministrazione</a></li>
+                                    <?php } ?>
+                                    <li><a class="dropdown-item" href="<?php echo ABSPATH . '/logout.php' ?>">Logout</a></li>
+                                </ul>
+                            </li>
+                        <?php
                         }
                     ?>
-                    <li id="menuDropdown" class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"><?php echo $_SESSION['utente']['nome'] . ' ' . $_SESSION['utente']['cognome']; ?></a>
-                        <ul id="dropdown" class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="<?php echo ABSPATH . '/admin/modifica-utente.php?id=' . $_SESSION['utente']['id_utente']; ?>">Modifica utente</a></li>
-                            <?php if($_SESSION['utente']['livello'] == 1) { ?>
-                                <li><a class="dropdown-item" href="<?php echo ABSPATH . '/admin/lista-utenti.php'; ?>">Amministrazione</a></li>
-                            <?php } ?>
-                            <li><a class="dropdown-item" href="<?php echo ABSPATH . '/logout.php' ?>">Logout</a></li>
-                        </ul>
-                    </li>
                 </ul>
             </div>
         </div>

@@ -67,6 +67,9 @@ if(isset($_POST['addBtn'])) {
     $descrizione = $_POST['descrizione'];
     $unitaMisura = $_POST['unita-misura'];
     $modificaTempo = date('Y-m-d H:i:s');
+    if(empty($nome) || empty($descrizione) || empty($unitaMisura)) {
+        $messaggio = '<div class="alert alert-danger mt-3" role="alert">Compila tutti i campi.</div>';
+    }
     // Query per aggiungere l'ingrediente
     $query = "UPDATE ingredienti SET nome = ?, descrizione = ?, unita_misura = ?, ultima_modifica = ? WHERE id_ingrediente = ?";
     $statement = $mysqli->prepare($query);

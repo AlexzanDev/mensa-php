@@ -13,7 +13,7 @@ $(document).ready(function() {
         }
     });
 
-    // Ricerca nelle tabelle - Via: https://stackoverflow.com/questions/64546933/how-to-use-jquery-to-filter-a-bootstrap-table-by-particular-columns-only
+    // Ricerca nelle tabelle - https://stackoverflow.com/questions/64546933/how-to-use-jquery-to-filter-a-bootstrap-table-by-particular-columns-only
     function ricercaTabella() {
         var ricerca = $(this).val().toLowerCase();
         $("tr:not(:first)").filter(function() {     
@@ -53,14 +53,21 @@ $(document).ready(function() {
     };
     $.datepicker.setDefaults($.datepicker.regional['it']);
     $("#dataNascita").datepicker();
+    $("#dataScadenza").datepicker();
 
-    // Gestisci ingredienti da nascondere se sono già stati aggiunti (modifica ricetta)
+    // Gestione ingredienti da nascondere se sono già stati aggiunti (modifica ricetta)
     var ingredienti = [];
     $('.ingrediente-elemento').each(function() {
         ingredienti.push($(this).find('input[name="ingredienti[]"]').val());
     });
     for(var i = 0; i < ingredienti.length; i++) {
         $('#ingredienti option[value="' + ingredienti[i] + '"]').prop('disabled', true);
+    }
+
+    // Disabilita il bottone di aggiunta ingrediente in modifica lotto se un ingrediente è già stato aggiunto
+    var ingrediente = $('input[name="ingrediente"]').val();
+    if(ingrediente != '' && ingrediente != null) {
+        $('#addIngredienteLottoBtn').prop('disabled', true);
     }
 
     // Gestione aggiunta ingredienti nella creazione ricetta
@@ -91,11 +98,35 @@ $(document).ready(function() {
             alert('Inserisci un ingrediente e la quantità!');
         }
     });
+
+    // Gestione aggiunta ingredienti in lotto
+    $('#addIngredienteLottoBtn').click(function() {
+        var ingrediente = $('#ingredientiLotto').val();
+        var quantita = $('#quantita').val();
+        if(ingrediente != '' && quantita != '') {
+            // Mostra il nome dell'ingrediente selezionato. SI PUO' SELEZIONARE SOLO UN INGREDIENTE
+            var ingredienteNome = $('#ingredientiLotto option:selected').text();
+            var nuovoIngrediente = '<div class="d-flex ingrediente-elemento">' +
+                                    '<input type="hidden" name="ingrediente" value="' + ingrediente + '">'
+                                    + '<input type="hidden" name="quantita' + '" value="' + quantita + '">'
+                                    + '<p class="edit-form-text mt-2">' + ingredienteNome + ': ' + quantita + ' pezzi</p>'
+                                    + '<button type="button" id="rimuoviIngredienteBtn" class="btn btn-danger mt-2"><i class="fas fa-times"></i></button></div>';
+            $('.ingredienti-group').append(nuovoIngrediente);
+            $('#ingredientiLotto').val('');
+            $('#quantitaLotto').val('');
+            $('#addIngredienteLottoBtn').prop('disabled', true);
+        } else {
+            alert('Inserisci un ingrediente e la quantità!');
+        }
+    });
+
     // Rimuove l'ingrediente selezionato
     $(document).on('click', '#rimuoviIngredienteBtn', function() {
         $(this).parent().remove();
-        // Abilita l'ingrediente selezionato
+        // Abilita l'ingrediente selezionato e permetti di aggiungere un ingrediente
         var ingrediente = $(this).parent().find('input[name="ingredienti[]"]').val();
+        var ingredienteLotto = $(this).parent().find('input[name="ingredientiLotto[]"]').val();
         $('#ingredienti option[value="' + ingrediente + '"]').prop('disabled', false);
+        $('#addIngredienteLottoBtn').prop('disabled', false);
     });
 });
