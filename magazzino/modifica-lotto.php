@@ -15,11 +15,11 @@ if(!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     exit();
 } else {
     // Se l'ID è valido, controlla se esiste un ingrediente con questo ID
-    $idIngrediente = $_GET['id'];
+    $idLotto = $_GET['id'];
     $checkIngrediente = true;
-    $query = "SELECT id_ingrediente, nome, descrizione, unita_misura, ultima_modifica, id_utente FROM ingredienti WHERE (id_ingrediente = ?)";
+    $query = "SELECT i.nome,m.id_lotto, m.descrizione, m.data_scadenza, m.quantita,m.prezzo,m.ultima_modifica,m.stato,m.id_ingrediente FROM magazzino m,ingredienti i WHERE i.id_ingrediente=m.id_ingrediente and (id_lotto = ?);";
     $statement = $mysqli->prepare($query);
-    $statement->bind_param("i", $idIngrediente);
+    $statement->bind_param("i", $idLotto);
     if($statement->execute()) {
         $statement->store_result();
         // Se non esiste un ingrediente con questo ID, mostra un messaggio di errore
@@ -29,7 +29,8 @@ if(!isset($_GET['id']) || !is_numeric($_GET['id'])) {
             exit();
         } else {
             // Se esiste un ingrediente con questo ID, salva i dati
-            $statement->bind_result($idIngrediente, $nome, $descrizione, $unitaMisura, $ultimaModifica, $idUtente); // Abbina i risultati della query alle variabili
+            $statement->bind_result($nomeIngrediente,$idLotto, $descrizione, $dataScadenza, $quantita,$prezzo,$ultimaModifica,$stato,$idUtente);
+            //$statement->bind_result($nomeIngrediente, $nome, $descrizione, $unitaMisura, $ultimaModifica, $idUtente); // Abbina i risultati della query alle variabili
             $statement->fetch(); // Estrae i risultati dalla query
             $queryUtente = "SELECT nome, cognome FROM utenti WHERE (id_utente = ?)";
             $statementUtente = $mysqli->prepare($queryUtente);
@@ -56,14 +57,31 @@ if(!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 // Gestisci il form
 if(isset($_POST['addBtn'])) {
     // Ottieni i dati
-    $nome = $_POST['nome'];
     $descrizione = $_POST['descrizione'];
-    $unitaMisura = $_POST['unita-misura'];
+    $quantita = $_POST['quantita'];
+    $prezzo = $_POST['prezzo'];
+    $dataScadenza=$_POST['dataScadenza'];
     $modificaTempo = date('Y-m-d H:i:s');
     // Query per aggiungere l'ingrediente
-    $query = "UPDATE ingredienti SET nome = ?, descrizione = ?, unita_misura = ?, ultima_modifica = ? WHERE id_ingrediente = ?";
+    $query = "UPDATE magazzino SET  descrizione = ?, data_scadenza = ?, quantita = ?, prezzo = ? ,ultima_modifica=?, id_utente=? WHERE id_lotto = ?";
     $statement = $mysqli->prepare($query);
-    $statement->bind_param('ssssi', $nome, $descrizione, $unitaMisura, $modificaTempo, $idIngrediente);
+    $statement->bind_param('ssiisii', $descrizione, $dataScadenza, $quantita, $prezzo, $modificaTempo,$idUtente, $idLotto);
+    // Esegui la query
+    if($statement->execute()) {
+        $messaggio = '<div class="alert alert-success mt-3" role="alert">Lotto modificato con successo. <a href="visualizza-lotto.php?id=' . $idLotto . '">Visualizza lotto</a>.</div>';
+        $ultimaModifica = $modificaTempo;
+    } else {
+        $messaggio = '<div class="alert alert-danger mt-3" role="alert">Errore durante la modifica del lotto.</div>';
+    }
+    $statement->close();
+}
+if(isset($_POST['arcvBtn'])) {
+    // Query per aggiungere l'ingrediente
+    $modificaTempo = date('Y-m-d H:i:s');
+    $query = "UPDATE magazzino SET stato=?, ultima_modifica=?, id_utente=? WHERE id_lotto=?;";
+    $stato=0;
+    $statement = $mysqli->prepare($query);
+    $statement->bind_param('isii', $stato, $modificaTempo, $idUtente, $idLotto);
     // Esegui la query
     if($statement->execute()) {
         $messaggio = '<div class="alert alert-success mt-3" role="alert">Ingrediente modificato con successo. <a href="visualizza-ingrediente.php?id=' . $idIngrediente . '">Visualizza ingrediente</a>.</div>';
@@ -77,7 +95,7 @@ if(isset($_POST['addBtn'])) {
 <div class="container mt-3">
     <div class="heading-view">
         <div class="heading-view-title">
-            <h1>Modifica <?php echo $nome; ?></h1>
+            <h1>Modifica lotto:<?php echo $idLotto; ?> (<?php echo $nomeIngrediente; ?>)</h1>
         </div>
     </div>
     <?php
@@ -89,38 +107,62 @@ if(isset($_POST['addBtn'])) {
         <form class="edit-form" method="POST">
             <div class="edit-form-content">
                 <div class="edit-form-group">
-                    <label class="fw-bold" for="nome">Nome</label>
-                    <input type="text" class="form-control mt-2" id="nome" name="nome" placeholder="Nome" required value="<?php echo $nome; ?>">
+                    <label class="fw-bold" for="nome">Nome ingrediente</label>
+                    <input type="text" class="form-control mt-2" id="nome" name="nome" placeholder="Nome" required value="<?php echo $nomeIngrediente; ?>" readonly>
                     <p class="edit-form-text text-muted mt-2">Inserisci il nome dell'ingrediente.</p>
                     <div class="edit-form-disclaimer mt-2">
                         <i class="fa-solid fa-circle-exclamation" style="color: #ff0000;"></i>
                         <p class="edit-form-text ms-1 text-danger">Campo richiesto.</p>
                     </div>
                 </div>
+
                 <div class="edit-form-group mt-4">
                     <label class="fw-bold mb-2" for="descrizione">Descrizione</label>
                     <textarea name="descrizione" id="descrizione"><?php echo $descrizione; ?></textarea>
                     <p class="edit-form-text text-muted mt-2">Inserisci la descrizione dell'ingrediente.</p>
                 </div>
-                <div class="edit-form-group mt-4">
-                    <label class="fw-bold" for="unita-misura">Unità di misura</label>
-                    <select class="form-select mt-2" id="unita-misura" name="unita-misura" required>
-                        <option value="g" <?php if($unitaMisura == 'g') { echo 'selected'; } ?>>Grammi</option>
-                        <option value="kg" <?php if($unitaMisura == 'kg') { echo 'selected'; } ?>>Chilogrammi</option>
-                        <option value="l" <?php if($unitaMisura == 'l') { echo 'selected'; } ?>>Litri</option>
-                        <option value="ml" <?php if($unitaMisura == 'ml') { echo 'selected'; } ?>>Millilitri</option>
-                        <option value="pz" <?php if($unitaMisura == 'pz') { echo 'selected'; } ?>>Pezzi</option>
-                    </select>
-                    <p class="edit-form-text text-muted mt-2">Inserisci l'unità di misura dell'ingrediente.</p>
+
+                <div class="edit-form-group">
+                    <label class="fw-bold" for="nome">Data scadenza</label>
+                    <input type="date" class="form-control mt-2" id="dataScadenza" name="dataScadenza" placeholder="dataScadenza" required value="<?php echo $dataScadenza; ?>">
+                    <p class="edit-form-text text-muted mt-2">Inserisci la data di scadenza aggiornata.</p>
                     <div class="edit-form-disclaimer mt-2">
                         <i class="fa-solid fa-circle-exclamation" style="color: #ff0000;"></i>
                         <p class="edit-form-text ms-1 text-danger">Campo richiesto.</p>
                     </div>
                 </div>
+
+                <div class="edit-form-group">
+                    <label class="fw-bold" for="nome">Quantità</label>
+                    <input type="number" class="form-control mt-2" id="quantita" name="quantita" placeholder="Quantita" required value="<?php echo $quantita; ?>">
+                    <p class="edit-form-text text-muted mt-2">Inserisci la quantità.</p>
+                    <div class="edit-form-disclaimer mt-2">
+                        <i class="fa-solid fa-circle-exclamation" style="color: #ff0000;"></i>
+                        <p class="edit-form-text ms-1 text-danger">Campo richiesto.</p>
+                    </div>
+                </div>
+
+                <div class="edit-form-group">
+                    <label class="fw-bold" for="prezzo">Prezzo</label>
+                    <input type="number" class="form-control mt-2" id="prezzo" name="prezzo" placeholder="prezzo" required value="<?php echo $prezzo; ?>">
+                    <p class="edit-form-text text-muted mt-2">Inserisci il prezzo del lotto.</p>
+                    <div class="edit-form-disclaimer mt-2">
+                        <i class="fa-solid fa-circle-exclamation" style="color: #ff0000;"></i>
+                        <p class="edit-form-text ms-1 text-danger">Campo richiesto.</p>
+                    </div>
+                </div>
+
+                
             </div>
-            <div class="edit-form-footer mt-3">
-                <button type="submit" class="btn btn-primary" name="addBtn">Salva</button>
+            <div style="display: flex;">
+                <div class="edit-form-footer mt-3">
+                    <button type="submit" class="btn btn-primary" name="addBtn">Salva</button>
+                </div>
+                <div class="edit-form-footer mt-3" style="margin-left: 10px;">
+                    <button type="submit" class="btn btn-danger" name="arcvBtn">Archivia</button>
+                </div>
             </div>
+            
         </form>
         <div class="edit-form-properties">
             <div class="edit-form-properties-group">

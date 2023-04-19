@@ -20,6 +20,24 @@ $(document).ready(function() {
             $(this).toggle($(this).find("td:first").text().toLowerCase().indexOf(ricerca) > -1);
         });
     }
+
+    /*
+    function ricercaTabellaLotti() {
+      var ricerca = $(this).val().toLowerCase();
+      $("tr:not(:first)").filter(function () {
+        var trovato = false;
+        $(this)
+          .find("td")
+          .each(function () {
+            if ($(this).text().toLowerCase().indexOf(ricerca) > -1) {
+              trovato = true;
+              return false; // interrompe il ciclo each
+            }
+          });
+        $(this).toggle(trovato);
+      });
+    }
+    */
     $("#ricerca").on("keyup", ricercaTabella);
 
     // Mostra il dropdown del menu al click
