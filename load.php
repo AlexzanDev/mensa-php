@@ -70,6 +70,34 @@ if(!isset($_SESSION['utente']) && basename($_SERVER['PHP_SELF']) != 'setup.php')
     controllaUtenti($mysqli);
 }
 
+// Aggiorna dati dell'utente in sessione se cambiano nel database
+function aggiornaDatiUtente($mysqli) {
+    $id_utente = $_SESSION['utente']['id_utente'];
+    $nome = $_SESSION['utente']['nome'];
+    $cognome = $_SESSION['utente']['cognome'];
+    $username = $_SESSION['utente']['username'];
+    $livello = $_SESSION['utente']['livello'];
+    $query = "SELECT id_utente, nome, cognome, username, livello FROM utenti WHERE id_utente = ?";
+    $statement = $mysqli->prepare($query);
+    $statement->bind_param('i', $_SESSION['utente']['id_utente']);
+    if($statement->execute()) {
+        $statement->store_result();
+        if($statement->num_rows == 1) {
+            $statement->bind_result($id_utente, $nome, $cognome, $username, $livello);
+            $statement->fetch();
+            $_SESSION['utente']['id_utente'] = $id_utente;
+            $_SESSION['utente']['nome'] = $nome;
+            $_SESSION['utente']['cognome'] = $cognome;
+            $_SESSION['utente']['username'] = $username;
+            $_SESSION['utente']['livello'] = $livello;
+        }
+    }
+    $statement->close();
+}
+if(isset($_SESSION['utente'])) {
+    aggiornaDatiUtente($mysqli);
+}
+
 // Reindirizza utente in base al ruolo
 function controllaRuoloUtente($ruolo) {
     switch($ruolo):
@@ -81,6 +109,7 @@ function controllaRuoloUtente($ruolo) {
             break;
         case 3:
         case 4:
+        case 5:
             header('Location: ' . MENSA . '/index.php');
             break;
         case 0:

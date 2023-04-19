@@ -3,6 +3,14 @@
 // Importa il file di caricamento
 require_once '../load.php';
 
+// Controlla i permessi
+if(!isset($_SESSION['utente'])) {
+    header('Location: ' . ABSPATH . '/login.php');
+    exit;
+} elseif($_SESSION['utente']['livello'] != 1 && $_SESSION['utente']['livello'] != 4) { 
+    die('Non hai i permessi per accedere a questa pagina.');
+}
+
 // Ottieni ingredienti da database
 $query = "SELECT id_ingrediente, nome, unita_misura FROM ingredienti";
 $statement = $mysqli->prepare($query);
@@ -137,8 +145,8 @@ require_once ABSPATH . '/layout/components/header.php';
                     <p class="edit-form-text text-muted mt-2">Inserisci il tempo di cottura della ricetta (se presente) in minuti.</p>
                 </div>
                 <div class="edit-form-group mt-4">
-                    <label class="fw-bold" for="sommario">Sommario</label>
-                    <input type="text" class="form-control mt-2" id="sommario" name="sommario" placeholder="Sommario">
+                    <label class="fw-bold" for="sommario">Breve descrizione</label>
+                    <input type="text" class="form-control mt-2" id="sommario" name="sommario" placeholder="Breve descrizione">
                     <p class="edit-form-text text-muted mt-2">Breve descrizione del piatto da mostrare nella lista delle ricette.</p>
                 </div>
             </div>

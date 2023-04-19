@@ -42,7 +42,7 @@ if(isset($_POST['setupBtn'])) {
         if($statement->execute()) {
             // Se l'utente è stato creato, reindirizza alla pagina di login
             $messaggio = '<div class="alert alert-success mt-3" role="alert">Utente amministratore creato con successo. Effettua l\'accesso.</div>';
-            $_SESSION['messaggio'] = $messaggio;    
+            $_SESSION['messaggio'] = $messaggio;  
             header('Location: login.php');
             exit;
         } else {
@@ -83,10 +83,10 @@ mensaHead('Setup');
             </div>
             <div class="form-group mb-4">
                 <label class="mb-2 fw-bold" for="email">Email</label>
-                <input type="text" name="email" id="email" class="form-control login-form-input" placeholder="indirizzo@mail.it" required>
+                <input type="email" name="email" id="email" class="form-control login-form-input" placeholder="indirizzo@mail.it" required>
             </div>
             <div class="form-group mb-4">
-                <label class="mb-2 fw-bold" for="password">Password</label>
+                <label class="mb-2 fw-bold" for="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}">Password</label>
                 <div class="login-password-container">
                     <input type="password" name="password" id="password" class="form-control login-form-input" placeholder="Inserisci la password" required>
                     <i id="password-eye" class="fa-solid fa-eye login-password-eye"></i>
@@ -95,9 +95,10 @@ mensaHead('Setup');
             <div class="form-group mb-4">
                 <label class="mb-2 fw-bold" for="passwordVerifica">Conferma la nuova password</label>
                 <div class="login-password-container">
-                    <input type="password" name="passwordVerifica" id="passwordVerifica" class="form-control login-form-input" placeholder="Conferma password" required>
+                    <input type="password" name="passwordVerifica" id="passwordVerifica" class="form-control login-form-input" placeholder="Conferma password" required pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}">
                     <i id="verifica-password-eye" class="fa-solid fa-eye login-password-eye"></i>
                 </div>
+                <p class="form-text text-muted passwordAiuto">La password deve contenere almeno 8 caratteri, un numero, una lettera maiuscola e una minuscola.</p>
             </div>
             <div class="form-group mb-4">
                 <label class="mb-2 fw-bold" for="indirizzo">Indirizzo</label>

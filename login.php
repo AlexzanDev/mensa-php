@@ -21,6 +21,7 @@ if (controlloLogin()) {
 // Gestione del login
 if(isset($_POST['loginBtn'])) {
     $accessoEffettuato = false;
+    $disabilitato = false;
     $email = $_POST['email'];
     $password = $_POST['password'];
     $query = "SELECT id_utente, nome, cognome, username, password, livello FROM utenti WHERE (email = ?)"; // Creazione query
@@ -40,10 +41,16 @@ if(isset($_POST['loginBtn'])) {
                     'username' => $username,
                     'livello' => $livello
                 );
-                $accessoEffettuato = true;
-                // Reindirizza alla pagina principale
-                header('Location: ' . 'index.php');
-                exit;
+                if($livello == 6) {
+                    $messaggio = '<div class="alert alert-danger" role="alert">Questo utente è stato disabilitato.</div>';
+                    $disabilitato = true;
+                    session_destroy();
+                } else {
+                    $accessoEffettuato = true;
+                    // Reindirizza alla pagina principale
+                    header('Location: ' . 'index.php');
+                    exit;
+                }
             }
         }
     } else {
@@ -52,7 +59,7 @@ if(isset($_POST['loginBtn'])) {
     // Chiudi la connessione
     $statement->close();
     // Mostra errore se le credenziali non sono corrette
-    if(!$accessoEffettuato) {
+    if(!$accessoEffettuato && !$disabilitato) {
         $messaggio = '<div class="alert alert-danger" role="alert">Le credenziali inserite non sono corrette.</div>';
     }
 }
@@ -80,7 +87,7 @@ mensaHead('Login');
         <form method="post" class="login-form">
             <div class="form-group mb-4">
                 <label class="mb-2 fw-bold" for="email">Email</label>
-                <input type="text" name="email" id="email" class="form-control login-form-input" placeholder="indirizzo@mail.it" required>
+                <input type="email" name="email" id="email" class="form-control login-form-input" placeholder="indirizzo@mail.it" required>
             </div>
             <div class="form-group mb-4">
                 <div class="d-flex justify-content-between">

@@ -91,16 +91,18 @@ mensaHead('Ripristina la password');
             <div class="form-group mb-4">
                 <label class="mb-2 fw-bold" for="password">Nuova password</label>
                 <div class="login-password-container">
-                    <input type="password" name="nuovaPassword" id="password" class="form-control login-form-input" placeholder="Nuova password" required>
+                    <input type="password" name="nuovaPassword" id="password" class="form-control login-form-input" placeholder="Nuova password" required pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}">
                     <i id="password-eye" class="fa-solid fa-eye login-password-eye"></i>
                 </div>
+                <p class="form-text text-muted passwordAiuto">La password deve contenere almeno 8 caratteri, un numero, una lettera maiuscola e una minuscola.</p>
             </div>
             <div class="form-group mb-4">
                 <label class="mb-2 fw-bold" for="password">Conferma la nuova password</label>
                 <div class="login-password-container">
-                    <input type="password" name="nuovaPasswordVerifica" id="password" class="form-control login-form-input" placeholder="Conferma password" required>
+                    <input type="password" name="nuovaPasswordVerifica" id="password" class="form-control login-form-input" placeholder="Conferma password" required pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}">
                     <i id="password-eye" class="fa-solid fa-eye login-password-eye"></i>
                 </div>
+                <p class="form-text text-muted passwordAiuto">La password deve contenere almeno 8 caratteri, un numero, una lettera maiuscola e una minuscola.</p>
             </div>
             <div class="form-group mb-4">
                 <button name="reimpostaBtn" type="submit" class="btn btn-primary w-100 login-button">Reimposta la password</button>
