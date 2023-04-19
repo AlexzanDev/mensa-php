@@ -230,3 +230,8 @@ span.edit-form-text {
     font-size: 12px;
     text-decoration: none;
 }
+
+.passwordAiuto {
+    margin-top: 10px;
+    font-size: 14px;
+}

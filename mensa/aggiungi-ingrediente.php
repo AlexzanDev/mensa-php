@@ -3,6 +3,14 @@
 // Importa il file di caricamento
 require_once '../load.php';
 
+// Controlla i permessi
+if(!isset($_SESSION['utente'])) {
+    header('Location: ' . ABSPATH . '/login.php');
+    exit;
+} elseif($_SESSION['utente']['livello'] != 1 && $_SESSION['utente']['livello'] != 4) { 
+    die('Non hai i permessi per accedere a questa pagina.');
+}
+
 // Gestisci il form
 if(isset($_POST['addBtn'])) {
     // Ottieni i dati

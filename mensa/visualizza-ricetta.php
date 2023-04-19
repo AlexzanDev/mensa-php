@@ -3,6 +3,14 @@
 // Importa il file di caricamento
 require_once '../load.php';
 
+// Controlla i permessi
+if(!isset($_SESSION['utente'])) {
+    header('Location: ' . ABSPATH . '/login.php');
+    exit;
+} elseif($_SESSION['utente']['livello'] == 5 || $_SESSION['utente']['livello'] == 2) { 
+    die('Non hai i permessi per accedere a questa pagina.');
+}
+
 // Controlla se un ID viene passato o meno
 if(!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     echo 'ID ricetta non valido.';

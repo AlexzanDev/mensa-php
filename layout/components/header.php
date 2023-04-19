@@ -7,10 +7,14 @@ if (!defined('ABSPATH')) {
 
 // Crea menu di navigazione
 function creaMenu() {
-    $menuMensa = array(
+    $menuFoodManager = array(
         'Aggiungi ricetta' => ABSPATH . '/mensa/aggiungi-ricetta.php',
         'Lista ricette' => ABSPATH . '/mensa/lista-ricette.php',
         'Aggiungi ingrediente' => ABSPATH . '/mensa/aggiungi-ingrediente.php',
+        'Lista ingredienti' => ABSPATH . '/mensa/lista-ingredienti.php',
+    );
+    $menuCuoco = array(
+        'Lista ricette' => ABSPATH . '/mensa/lista-ricette.php',
         'Lista ingredienti' => ABSPATH . '/mensa/lista-ingredienti.php',
     );
     $menuMagazzino = array(
@@ -23,7 +27,7 @@ function creaMenu() {
         'Magazzino' => ABSPATH . '/magazzino/lista-lotti.php',
         'Lista utenti' => ABSPATH . '/admin/lista-utenti.php',
     );
-    return array($menuMensa, $menuMagazzino, $menuAdmin);
+    return array($menuFoodManager, $menuCuoco, $menuMagazzino, $menuAdmin);
 }
 
 $sitoMenu = creaMenu();
@@ -39,17 +43,23 @@ $sitoMenu = creaMenu();
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
                 <ul class="navbar-nav ms-auto">
                     <?php 
-                        if($_SESSION['nomeCartella'] == 'mensa') {
-                            foreach($sitoMenu[0] as $titolo => $url) {
-                                echo '<li class="nav-item"><a class="nav-link" href="' . $url . '">' . $titolo . '</a></li>';
-                            }
-                        } elseif($_SESSION['nomeCartella'] == 'magazzino') {
-                            foreach($sitoMenu[1] as $titolo => $url) {
-                                echo '<li class="nav-item"><a class="nav-link" href="' . $url . '">' . $titolo . '</a></li>';
-                            }
-                        } elseif($_SESSION['nomeCartella'] == 'admin') {
-                            foreach($sitoMenu[2] as $titolo => $url) {
-                                echo '<li class="nav-item"><a class="nav-link" href="' . $url . '">' . $titolo . '</a></li>';
+                        if(isset($_SESSION['utente'])) {
+                            if($_SESSION['utente']['livello'] == 1) {
+                                foreach($sitoMenu[3] as $titolo => $url) {
+                                    echo '<li class="nav-item"><a class="nav-link" href="' . $url . '">' . $titolo . '</a></li>';
+                                }
+                            } else if($_SESSION['utente']['livello'] == 2) {
+                                foreach($sitoMenu[2] as $titolo => $url) {
+                                    echo '<li class="nav-item"><a class="nav-link" href="' . $url . '">' . $titolo . '</a></li>';
+                                }
+                            } else if($_SESSION['utente']['livello'] == 3) {
+                                foreach($sitoMenu[1] as $titolo => $url) {
+                                    echo '<li class="nav-item"><a class="nav-link" href="' . $url . '">' . $titolo . '</a></li>';
+                                }
+                            } else if($_SESSION['utente']['livello'] == 4) {
+                                foreach($sitoMenu[0] as $titolo => $url) {
+                                    echo '<li class="nav-item"><a class="nav-link" href="' . $url . '">' . $titolo . '</a></li>';
+                                }
                             }
                         }
                     ?>
