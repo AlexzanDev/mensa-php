@@ -66,7 +66,6 @@ if($statementRicette->execute()) {
 require_once '../head.php';
 mensaHead($nome . ' | Mensa');
 require_once ABSPATH . '/layout/components/header.php';
-
 ?>
 <div class="container mt-3">
     <div class="heading-view">
