@@ -28,8 +28,8 @@ require_once ABSPATH . '/layout/components/header.php';
         <input id="ricerca" type="text" class="form-control search-input" placeholder="Cerca lotto">
     </div>
     <?php
-    // Query per ottenere gli ingredienti
-    $query = "SELECT i.nome,m.id_lotto, m.descrizione, m.data_scadenza, m.quantita,m.prezzo,m.ultima_modifica,m.stato,m.id_ingrediente FROM magazzino m,ingredienti i WHERE i.id_ingrediente=m.id_ingrediente and m.stato=0;";
+    // Query per ottenere i lotti
+    $query = "SELECT i.nome, m.id_lotto, m.descrizione, m.data_scadenza, m.quantita, m.prezzo, m.ultima_modifica, m.stato, m.id_ingrediente FROM magazzino m, ingredienti i WHERE (i.id_ingrediente = m.id_ingrediente AND m.stato = 0)";
     $statement = $mysqli->prepare($query);
     // Esegui la query
     if ($statement->execute()) {
@@ -39,7 +39,7 @@ require_once ABSPATH . '/layout/components/header.php';
             echo '<div class="alert alert-warning mt-3" role="alert">Nessun lotto trovato.</div>';
             exit;
         } else {
-            $statement->bind_result($nomeIngrediente,$idLotto, $descrizione, $dataScadenza, $quantita,$prezzo,$ultimaModifica,$stato,$idUtente);
+            $statement->bind_result($nomeIngrediente, $idLotto, $descrizione, $dataScadenza, $quantita, $prezzo, $ultimaModifica, $stato, $idUtente);
         ?>
             <table class="table table-view table-bordered mt-3">
                 <thead class="table-light">

@@ -38,7 +38,7 @@ if(isset($_POST['addBtn'])) {
             $password_hash = password_hash($password, PASSWORD_DEFAULT);
             $nuovaData = date_create_from_format("d/m/Y", $dataNascita); // Converti data
             $dataNascita = date_format($nuovaData, "Ymd"); // Genera data da inserire nel database
-            // Query per aggiungere l'ingrediente
+            // Query per aggiungere l'utente
             $query = "INSERT INTO utenti (nome, cognome, username, email, password, indirizzo, telefono, codice_fiscale, data_nascita, livello) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $statement = $mysqli->prepare($query);
             $statement->bind_param('sssssssssi', $nome, $cognome, $username, $email, $password_hash, $indirizzo, $telefono, $codice_fiscale, $dataNascita, $ruolo);

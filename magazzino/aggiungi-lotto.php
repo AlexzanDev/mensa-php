@@ -48,7 +48,7 @@ if(isset($_POST['addBtn'])) {
     if(empty($idIngrediente) || empty($quantita) || empty($prezzo) || empty($dataScadenza)) {
         $messaggio = '<div class="alert alert-danger mt-3" role="alert">Compila tutti i campi.</div>';
     } else {
-        // Query per aggiungere l'ingrediente
+        // Query per aggiungere il lotto
         $query = "INSERT INTO magazzino (id_ingrediente, descrizione, data_scadenza, prezzo, quantita, stato, ultima_modifica, id_utente) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $statement = $mysqli->prepare($query);
         $statement->bind_param('issdiisi', $idIngrediente, $descrizione, $dataScadenza, $prezzo, $quantita, $stato, $ultimaModifica, $idUtente);
@@ -61,6 +61,7 @@ if(isset($_POST['addBtn'])) {
         } else {
             $messaggio = '<div class="alert alert-danger mt-3" role="alert">Errore durante l\'aggiunta del lotto.</div>';
         }
+        $statement->close();
     }
 }
 

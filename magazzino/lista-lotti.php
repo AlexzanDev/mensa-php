@@ -13,9 +13,9 @@ if(!isset($_SESSION['utente'])) {
 
 // Gestisci archiviazione lotto
 if(isset($_POST['archiviaBtn'])) {
-    // Query per aggiungere l'ingrediente
     $modificaTempo = date('Y-m-d H:i:s');
     $idLotto = $_POST['idLotto'];
+    // Query per archiviare il lotto
     $query = "UPDATE magazzino SET stato = ?, ultima_modifica = ?, id_utente = ? WHERE id_lotto = ?";
     $stato = 0; // Archiviato
     $statement = $mysqli->prepare($query);

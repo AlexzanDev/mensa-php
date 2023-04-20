@@ -27,7 +27,7 @@ require_once ABSPATH . '/layout/components/header.php';
         <input id="ricerca" type="text" class="form-control search-input" placeholder="Cerca utente">
     </div>
     <?php
-    // Query per ottenere gli ingredienti
+    // Query per ottenere gli utenti
     $query = "SELECT nome, cognome, username, email, telefono, codice_fiscale, id_utente FROM utenti";
     $statement = $mysqli->prepare($query);
     // Esegui la query

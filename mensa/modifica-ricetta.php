@@ -89,7 +89,7 @@ if(isset($_POST['addBtn'])) {
     if(empty($nome) || empty($ingredientiRicetta) || empty($tempoPreparazione)) {
         $messaggio = '<div class="alert alert-danger mt-3" role="alert">Compila tutti i campi.</div>';
     } else {
-        // Inserisci la ricetta nel database
+        // Aggiorna la ricetta
         $query = "UPDATE ricette SET nome = ?, descrizione = ?, tempo_preparazione = ?, tempo_cottura = ?, ultima_modifica = ?, sommario = ?, id_utente = ? WHERE id_ricetta = ?";
         $statement = $mysqli->prepare($query);
         $statement->bind_param('ssiissii', $nome, $descrizione, $tempoPreparazione, $tempoCottura, $ultimaModifica, $sommario, $idUtente, $idRicetta);
