@@ -1,6 +1,6 @@
 # Mensa
 
-Riepilogo di tutta la documentazione del lavoro della mensa (perché dobbiamo fare le cose ordinate). Fate riferimento ai documenti nella cartella "docs" quando ci saranno, grazie.
+Riepilogo di tutta la documentazione del lavoro della mensa.
 
 ## Tutti i documenti
 
